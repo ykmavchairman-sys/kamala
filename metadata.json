@@ -1,0 +1,6 @@
+{
+  "name": "LUCKY STONE GURU - Shri Kamala Jewellers",
+  "description": "Vedic & Horoscope Personalized Gemstone Recommendation System & Fine Jewelry Atelier by Shri Kamala Jewellers. Discover your Bhagyashali Ratna, birth chart planetary analysis, and certified sacred gemstones.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
