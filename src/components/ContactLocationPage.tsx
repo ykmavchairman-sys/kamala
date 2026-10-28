@@ -5,7 +5,6 @@ import {
   Clock,
   Sparkles,
   ShieldCheck,
-  Award,
   Navigation,
   MessageCircle,
   Calendar,
@@ -14,12 +13,14 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { bellPlayer } from '../utils/audioBell';
+import { useLanguage } from '../context/LanguageContext';
 
 interface Props {
   onOpenBooking: () => void;
 }
 
 export const ContactLocationPage: React.FC<Props> = ({ onOpenBooking }) => {
+  const { t } = useLanguage();
   const [copiedAddress, setCopiedAddress] = useState(false);
 
   const showroomAddress = 'Sri Kamala Jewellers, Door No. 14/B, Main Commercial Road, Near Sanjay Gandhi Nagar Arch, Sanjay Gandhi Nagar, Ballari, Karnataka 583104';
@@ -42,17 +43,21 @@ export const ContactLocationPage: React.FC<Props> = ({ onOpenBooking }) => {
     <div className="max-w-7xl mx-auto space-y-10 pb-16">
       {/* Header */}
       <div className="text-center max-w-3xl mx-auto space-y-3">
-        <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-gradient-to-r from-amber-100 via-amber-200 to-amber-100 border border-amber-300 text-[#700B1A] text-xs font-black tracking-wider uppercase shadow-xs">
-          <Sparkles className="w-3.5 h-3.5 text-amber-700" />
-          FLAGSHIP SHOWROOM & JYOTISH ATELIER
+        <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-pink-50 dark:bg-stone-800 border border-[#CC338B]/30 text-[#CC338B] text-xs font-black tracking-wider uppercase shadow-xs">
+          <Sparkles className="w-3.5 h-3.5 text-[#CC338B]" />
+          {t('hero_trust_badge', '100% BIS 916 HUID Hallmark • Trusted Since 1974')}
         </div>
 
-        <h1 className="font-serif-royal text-3xl sm:text-5xl font-black text-stone-900 tracking-tight">
-          Visit Sri Kamala Jewellers, <span className="text-gold-gradient">Ballari</span>
+        <h1 className="text-3xl sm:text-5xl font-black text-[#21181E] dark:text-[#FAF9F6] tracking-tight">
+          {t('showroom_page_title', 'Visit Sri Kamala Jewellers, Ballari')}
         </h1>
 
-        <p className="text-stone-600 text-xs sm:text-sm max-w-xl mx-auto leading-relaxed font-medium">
-          Step into our flagship jewelry palace at Sanjay Gandhi Nagar, Ballari. Experience BIS 916 pure gold, master bridal craftsmanship, and 1-on-1 consultations with Chief Astrologer Nukala Srinivasrao.
+        <p className="font-bold text-[#CC338B] text-sm sm:text-base">
+          {t('proprietors_jewellers', 'Proprietors: Nukala Srinivas Rao & Nukala Manoj')}
+        </p>
+
+        <p className="text-stone-600 dark:text-stone-300 text-xs sm:text-sm max-w-xl mx-auto leading-relaxed font-medium">
+          {t('hero_desc', 'Step into our flagship jewelry showroom at Sanjay Gandhi Nagar, Ballari. 100% BIS 916 Hallmarked pure gold and live rate monthly accumulation schemes.')}
         </p>
       </div>
 
@@ -61,19 +66,19 @@ export const ContactLocationPage: React.FC<Props> = ({ onOpenBooking }) => {
         {/* Left Col: Contact Information (Glassmorphism Cards) */}
         <div className="lg:col-span-6 space-y-6">
           {/* Primary Address Card */}
-          <div className="glass-card-gold rounded-3xl p-6 sm:p-8 border-2 border-amber-300 shadow-[0_12px_45px_rgba(212,175,55,0.12)] space-y-5">
+          <div className="glass-card rounded-3xl p-6 sm:p-8 border border-[#CC338B]/30 shadow-xl space-y-5">
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#8B0000] to-[#50050E] text-amber-200 flex items-center justify-center shrink-0 shadow-md">
-                <MapPin className="w-6 h-6 text-amber-300" />
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#CC338B] to-[#9E1463] text-white flex items-center justify-center shrink-0 shadow-md">
+                <MapPin className="w-6 h-6 text-white" />
               </div>
               <div className="space-y-1">
-                <span className="text-[10px] font-black uppercase tracking-widest text-amber-900 block">
+                <span className="text-[10px] font-black uppercase tracking-widest text-[#CC338B] block">
                   Ballari Central Showroom
                 </span>
-                <h3 className="font-serif-royal text-xl sm:text-2xl font-black text-stone-950">
+                <h3 className="text-xl sm:text-2xl font-black text-stone-950 dark:text-stone-100">
                   Sanjay Gandhi Nagar Atelier
                 </h3>
-                <p className="text-xs sm:text-sm text-stone-700 leading-relaxed font-medium pt-1">
+                <p className="text-xs sm:text-sm text-stone-700 dark:text-stone-300 leading-relaxed font-medium pt-1">
                   {showroomAddress}
                 </p>
               </div>
@@ -83,14 +88,14 @@ export const ContactLocationPage: React.FC<Props> = ({ onOpenBooking }) => {
             <div className="flex flex-wrap items-center gap-3 pt-2">
               <button
                 onClick={handleOpenMaps}
-                className="flex-1 py-2.5 px-4 rounded-xl bg-[#8B0000] hover:bg-[#700B1A] text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-sm transition cursor-pointer"
+                className="btn-magenta flex-1 py-2.5 px-4 rounded-xl font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-sm transition cursor-pointer"
               >
-                <Navigation className="w-3.5 h-3.5 text-amber-300" />
+                <Navigation className="w-3.5 h-3.5 text-white" />
                 Get Driving Directions
               </button>
               <button
                 onClick={handleCopyAddress}
-                className="py-2.5 px-4 rounded-xl bg-white border border-amber-300 text-amber-950 hover:bg-amber-50 font-bold text-xs transition cursor-pointer"
+                className="py-2.5 px-4 rounded-xl bg-white dark:bg-stone-800 border border-[#CC338B]/30 text-[#CC338B] hover:bg-pink-50 font-bold text-xs transition cursor-pointer"
               >
                 {copiedAddress ? '✓ Address Copied' : 'Copy Address'}
               </button>
@@ -98,9 +103,9 @@ export const ContactLocationPage: React.FC<Props> = ({ onOpenBooking }) => {
           </div>
 
           {/* Direct Phone Dialing Triggers Card */}
-          <div className="glass-card rounded-3xl p-6 sm:p-8 border border-amber-200/80 shadow-sm space-y-5">
-            <h4 className="font-serif-royal text-lg font-bold text-stone-900 flex items-center gap-2">
-              <Phone className="w-5 h-5 text-amber-600" />
+          <div className="glass-card rounded-3xl p-6 sm:p-8 border border-[#CC338B]/20 shadow-sm space-y-5">
+            <h4 className="text-lg font-bold text-stone-900 dark:text-stone-100 flex items-center gap-2">
+              <Phone className="w-5 h-5 text-[#CC338B]" />
               Direct Phone & WhatsApp Helpline
             </h4>
 
@@ -108,31 +113,31 @@ export const ContactLocationPage: React.FC<Props> = ({ onOpenBooking }) => {
               {/* Ballari Landline */}
               <a
                 href="tel:08392271974"
-                className="p-4 rounded-2xl bg-white/90 border border-amber-200/90 hover:border-amber-400 hover:shadow-xs transition flex items-center justify-between group"
+                className="p-4 rounded-2xl bg-white/90 dark:bg-stone-900 border border-[#CC338B]/20 hover:border-[#CC338B] hover:shadow-xs transition flex items-center justify-between group"
               >
                 <div>
                   <span className="text-[10px] uppercase font-bold text-stone-500 block">Showroom Landline (Ballari)</span>
-                  <span className="text-base font-black text-stone-950 group-hover:text-[#8B0000] transition">
+                  <span className="text-base font-black text-stone-950 dark:text-stone-100 group-hover:text-[#CC338B] transition">
                     (08392) 271974
                   </span>
                 </div>
-                <span className="px-3 py-1 rounded-xl bg-amber-100 text-amber-900 font-bold text-xs group-hover:bg-amber-200">
+                <span className="px-3 py-1 rounded-xl bg-pink-50 text-[#CC338B] font-bold text-xs group-hover:bg-pink-100">
                   Call Now
                 </span>
               </a>
 
-              {/* Mobile / Astrologer Desk */}
+              {/* Mobile / Chief Desk */}
               <a
                 href="tel:+919876543210"
-                className="p-4 rounded-2xl bg-white/90 border border-amber-200/90 hover:border-amber-400 hover:shadow-xs transition flex items-center justify-between group"
+                className="p-4 rounded-2xl bg-white/90 dark:bg-stone-900 border border-[#CC338B]/20 hover:border-[#CC338B] hover:shadow-xs transition flex items-center justify-between group"
               >
                 <div>
-                  <span className="text-[10px] uppercase font-bold text-stone-500 block">Chief Astrologer Desk & Bullion</span>
-                  <span className="text-base font-black text-stone-950 group-hover:text-[#8B0000] transition">
+                  <span className="text-[10px] uppercase font-bold text-stone-500 block">Leadership & Bullion Desk</span>
+                  <span className="text-base font-black text-stone-950 dark:text-stone-100 group-hover:text-[#CC338B] transition">
                     +91 98765 43210
                   </span>
                 </div>
-                <span className="px-3 py-1 rounded-xl bg-amber-100 text-amber-900 font-bold text-xs group-hover:bg-amber-200">
+                <span className="px-3 py-1 rounded-xl bg-pink-50 text-[#CC338B] font-bold text-xs group-hover:bg-pink-100">
                   Call Desk
                 </span>
               </a>
@@ -142,20 +147,20 @@ export const ContactLocationPage: React.FC<Props> = ({ onOpenBooking }) => {
                 href="https://wa.me/919876543210?text=Namaste%20Sri%20Kamala%20Jewellers%20Ballari!%20I%20would%20like%20to%20inquire%20about%20visiting%20your%20Sanjay%20Gandhi%20Nagar%20showroom."
                 target="_blank"
                 rel="noreferrer"
-                className="p-4 rounded-2xl bg-gradient-to-r from-emerald-50 to-emerald-100/60 border border-emerald-300 hover:border-emerald-500 transition flex items-center justify-between group"
+                className="p-4 rounded-2xl bg-pink-50/40 dark:bg-stone-900 border border-[#CC338B]/20 hover:border-[#CC338B] transition flex items-center justify-between group"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-xl bg-[#CC338B] text-white flex items-center justify-center">
                     <MessageCircle className="w-5 h-5" />
                   </div>
                   <div>
-                    <span className="text-[10px] uppercase font-bold text-emerald-800 block">WhatsApp Showroom Desk</span>
-                    <span className="text-sm font-black text-emerald-950">
+                    <span className="text-[10px] uppercase font-bold text-[#CC338B] block">WhatsApp Showroom Desk</span>
+                    <span className="text-sm font-black text-stone-900 dark:text-stone-100">
                       Live Chat & Video Call Tours
                     </span>
                   </div>
                 </div>
-                <span className="px-3 py-1 rounded-xl bg-emerald-600 text-white font-bold text-xs">
+                <span className="btn-magenta px-3 py-1 rounded-xl font-bold text-xs">
                   Chat Now
                 </span>
               </a>
@@ -163,35 +168,35 @@ export const ContactLocationPage: React.FC<Props> = ({ onOpenBooking }) => {
           </div>
 
           {/* Operating Hours & Visiting Amenities */}
-          <div className="glass-card rounded-3xl p-6 sm:p-8 border border-amber-200/80 shadow-sm space-y-4">
-            <h4 className="font-serif-royal text-lg font-bold text-stone-900 flex items-center gap-2">
-              <Clock className="w-5 h-5 text-amber-600" />
+          <div className="glass-card rounded-3xl p-6 sm:p-8 border border-[#CC338B]/20 shadow-sm space-y-4">
+            <h4 className="text-lg font-bold text-stone-900 dark:text-stone-100 flex items-center gap-2">
+              <Clock className="w-5 h-5 text-[#CC338B]" />
               Operating Hours & Showroom Amenities
             </h4>
 
-            <div className="space-y-2 text-xs text-stone-700 font-medium">
-              <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/80 border border-amber-100">
+            <div className="space-y-2 text-xs text-stone-700 dark:text-stone-300 font-medium">
+              <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/80 dark:bg-stone-900 border border-[#CC338B]/15">
                 <span className="font-bold">Monday – Saturday:</span>
-                <span className="font-black text-stone-900">10:00 AM – 8:30 PM (All Day)</span>
+                <span className="font-black text-stone-900 dark:text-stone-100">10:00 AM – 8:30 PM (All Day)</span>
               </div>
-              <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/80 border border-amber-100">
+              <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/80 dark:bg-stone-900 border border-[#CC338B]/15">
                 <span className="font-bold">Sunday & Festive Days:</span>
-                <span className="font-black text-[#8B0000]">10:30 AM – 7:30 PM (Open)</span>
+                <span className="font-black text-[#CC338B]">10:30 AM – 7:30 PM (Open)</span>
               </div>
             </div>
 
-            <div className="pt-2 grid grid-cols-2 gap-2 text-[11px] font-semibold text-stone-700">
-              <span className="flex items-center gap-1.5 p-2 rounded-lg bg-amber-50/70 border border-amber-200">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> Dedicated Valet Parking
+            <div className="pt-2 grid grid-cols-2 gap-2 text-[11px] font-semibold text-stone-700 dark:text-stone-300">
+              <span className="flex items-center gap-1.5 p-2 rounded-lg bg-pink-50/50 dark:bg-stone-900 border border-[#CC338B]/20">
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#CC338B]" /> Dedicated Valet Parking
               </span>
-              <span className="flex items-center gap-1.5 p-2 rounded-lg bg-amber-50/70 border border-amber-200">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> Private Bridal Lounge
+              <span className="flex items-center gap-1.5 p-2 rounded-lg bg-pink-50/50 dark:bg-stone-900 border border-[#CC338B]/20">
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#CC338B]" /> Private Bridal Lounge
               </span>
-              <span className="flex items-center gap-1.5 p-2 rounded-lg bg-amber-50/70 border border-amber-200">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> Free Karatmeter Gold Testing
+              <span className="flex items-center gap-1.5 p-2 rounded-lg bg-pink-50/50 dark:bg-stone-900 border border-[#CC338B]/20">
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#CC338B]" /> Free Karatmeter Gold Testing
               </span>
-              <span className="flex items-center gap-1.5 p-2 rounded-lg bg-amber-50/70 border border-amber-200">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> Nukala Srinivasrao Chamber
+              <span className="flex items-center gap-1.5 p-2 rounded-lg bg-pink-50/50 dark:bg-stone-900 border border-[#CC338B]/20">
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#CC338B]" /> Consultation Chamber
               </span>
             </div>
           </div>
@@ -200,95 +205,66 @@ export const ContactLocationPage: React.FC<Props> = ({ onOpenBooking }) => {
         {/* Right Col: Interactive Visual Map & Appointment Booking */}
         <div className="lg:col-span-6 space-y-6">
           {/* Visual Showroom Map & Landmark Card */}
-          <div className="glass-card-gold rounded-3xl p-6 sm:p-8 border-2 border-amber-300 shadow-md space-y-5">
+          <div className="glass-card rounded-3xl p-6 sm:p-8 border border-[#CC338B]/30 shadow-md space-y-5">
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-[10px] text-amber-800 font-bold uppercase tracking-widest block">
+                <span className="text-[10px] text-[#CC338B] font-bold uppercase tracking-widest block">
                   Interactive Showroom Map
                 </span>
-                <h3 className="font-serif-royal text-xl font-bold text-stone-950">
+                <h3 className="text-xl font-bold text-stone-950 dark:text-stone-100">
                   Ballari Location Map
                 </h3>
               </div>
-              <span className="text-xs font-bold text-stone-500 bg-white/90 px-3 py-1 rounded-full border border-amber-200">
+              <span className="text-xs font-bold text-stone-500 bg-white/90 dark:bg-stone-800 px-3 py-1 rounded-full border border-[#CC338B]/20">
                 Sanjay Gandhi Nagar
               </span>
             </div>
 
             {/* Stylized Map Canvas Container */}
-            <div className="relative w-full h-72 sm:h-80 rounded-2xl overflow-hidden border border-amber-300/80 shadow-inner bg-[#F5EEDB] flex flex-col justify-between p-4">
-              {/* Map Canvas Background Grid */}
-              <div className="absolute inset-0 opacity-40 bg-[radial-gradient(#D4AF37_1px,transparent_1px)] [background-size:16px_16px]" />
+            <div className="relative w-full h-72 sm:h-80 rounded-2xl overflow-hidden border border-[#CC338B]/25 shadow-inner bg-pink-50/30 dark:bg-stone-900 flex flex-col justify-between p-4">
+              <div className="absolute inset-0 opacity-30 bg-[radial-gradient(#CC338B_1px,transparent_1px)] [background-size:16px_16px]" />
               
-              {/* Roads / Decorative Geometry */}
-              <div className="absolute top-1/2 left-0 right-0 h-10 bg-amber-200/60 -rotate-6 transform -translate-y-4" />
-              <div className="absolute top-0 bottom-0 left-1/3 w-8 bg-amber-200/60 rotate-12 transform" />
+              <div className="absolute top-1/2 left-0 right-0 h-10 bg-pink-100/50 dark:bg-stone-800 -rotate-6 transform -translate-y-4" />
+              <div className="absolute top-0 bottom-0 left-1/3 w-8 bg-pink-100/50 dark:bg-stone-800 rotate-12 transform" />
 
-              {/* Landmark Callouts */}
               <div className="relative z-10 flex justify-between items-start">
-                <div className="px-3 py-1.5 rounded-xl bg-white/90 border border-amber-300 text-[11px] font-bold text-stone-800 shadow-sm flex items-center gap-1.5">
-                  <Navigation className="w-3 h-3 text-amber-600" />
+                <div className="px-3 py-1.5 rounded-xl bg-white/90 dark:bg-stone-800 border border-[#CC338B]/30 text-[11px] font-bold text-stone-800 dark:text-stone-200 shadow-xs flex items-center gap-1.5">
+                  <Navigation className="w-3 h-3 text-[#CC338B]" />
                   Sanjay Gandhi Nagar Main Arch
                 </div>
-                <div className="px-3 py-1.5 rounded-xl bg-white/90 border border-amber-300 text-[11px] font-bold text-stone-800 shadow-sm">
+                <div className="px-3 py-1.5 rounded-xl bg-white/90 dark:bg-stone-800 border border-[#CC338B]/30 text-[11px] font-bold text-stone-800 dark:text-stone-200 shadow-xs">
                   Ballari Railway Station (3.2 km)
                 </div>
               </div>
 
               {/* Center Pin for Sri Kamala Jewellers */}
               <div className="relative z-10 mx-auto my-auto flex flex-col items-center">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#8B0000] via-[#A01020] to-[#55050F] p-1 shadow-[0_8px_25px_rgba(139,0,0,0.4)] flex items-center justify-center animate-bounce">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#CC338B] via-[#DE3C9A] to-[#8C0E56] p-1 shadow-[0_8px_25px_rgba(204,51,139,0.4)] flex items-center justify-center animate-bounce">
                   <div className="w-full h-full bg-white rounded-xl flex items-center justify-center p-1">
                     <img
                       src="/assets/aistudio/Golden_Lotus_Emblem_with_SKJ_Monogram_31db152a.png"
                       alt="Sri Kamala Jewellers"
-                      className="w-full h-full aspect-square object-contain"
+                      className="w-full h-full object-contain"
                     />
                   </div>
                 </div>
-                <div className="mt-2 px-4 py-1.5 rounded-full bg-[#8B0000] text-amber-100 font-serif-royal font-black text-xs shadow-md border border-amber-300 text-center whitespace-nowrap">
-                  Sri Kamala Jewellers • Ballari
+                <div className="mt-2 px-3 py-1 rounded-full bg-stone-900/90 text-white font-bold text-xs tracking-wide shadow-md border border-[#CC338B]/50 whitespace-nowrap">
+                  Sri Kamala Jewellers
                 </div>
               </div>
 
-              {/* Map Footer Action */}
-              <div className="relative z-10 flex items-center justify-between text-xs pt-2 border-t border-amber-300/40">
-                <span className="text-[11px] text-stone-600 font-semibold">Near Ballari City Center & Gandhi Nagar Circle</span>
+              <div className="relative z-10 flex justify-between items-end">
+                <span className="text-[10px] text-stone-500 bg-white/80 dark:bg-stone-800 px-2.5 py-1 rounded-lg">
+                  Door No. 14/B, Sanjay Gandhi Nagar
+                </span>
                 <button
                   onClick={handleOpenMaps}
-                  className="px-3 py-1 rounded-lg bg-white border border-amber-300 text-amber-950 font-bold hover:bg-amber-100 transition flex items-center gap-1 shadow-2xs"
+                  className="btn-magenta px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 shadow-sm cursor-pointer"
                 >
-                  Open in Google Maps <ExternalLink className="w-3 h-3" />
+                  <Navigation className="w-3 h-3" />
+                  <span>Open in Google Maps</span>
                 </button>
               </div>
-            </div>
-
-            {/* In-Store Astrologer Consultation Chamber Card */}
-            <div className="p-5 rounded-2xl bg-white/90 border border-amber-200 space-y-3 shadow-2xs">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-900 border border-amber-300 flex items-center justify-center font-serif-royal font-bold">
-                  🕉️
-                </div>
-                <div>
-                  <h4 className="font-serif-royal text-sm sm:text-base font-bold text-stone-950">
-                    Chamber of Acharya Nukala Srinivasrao
-                  </h4>
-                  <p className="text-[11px] text-stone-500 font-medium">
-                    In-person Birth Chart & Gemological Audit at Ballari
-                  </p>
-                </div>
-              </div>
-
-              <p className="text-xs text-stone-600 leading-relaxed font-medium">
-                Devotees can sit with Chief Astrologer Nukala Srinivasrao in person to analyze their Kundali, verify planetary dasha remedies, and inspect certified natural gemstones under high-magnification microscopes.
-              </p>
-
-              <button
-                onClick={onOpenBooking}
-                className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 text-stone-950 font-bold text-xs uppercase tracking-wider hover:brightness-105 transition shadow-sm cursor-pointer"
-              >
-                Schedule Showroom Appointment
-              </button>
             </div>
           </div>
         </div>

@@ -1,111 +1,437 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer base {
-  html, body, #root {
-    background-color: #F7F2EB; /* Warm Sand Pastel Beige */
-    color: #1F1A14;
-    min-height: 100vh;
+  * {
+    font-family: 'Candara', 'Candara Light', 'Calibri', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif !important;
   }
 
-  body {
-    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background-color: #F7F2EB; /* Warm Sand Pastel Beige */
-    color: #1F1A14;
+  html, body, #root {
+    min-height: 100vh;
+    font-family: 'Candara', 'Candara Light', 'Calibri', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif !important;
     overflow-x: hidden;
     -webkit-tap-highlight-color: transparent;
-  }
-  
-  h1, h2, h3, .font-serif-royal {
-    font-family: 'Cinzel', Georgia, serif;
-    letter-spacing: -0.015em;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
-  .font-editorial {
-    font-family: 'Playfair Display', Georgia, serif;
+  /* Default Sri Kamala Jewellers: Pearl White & Dark Purple Base */
+  html, body, #root, [data-brand="jewellers"] {
+    background-color: #FAF9F6;
+    color: #21181E;
+  }
+
+  html.dark, html.dark body, html.dark #root, html.dark [data-brand="jewellers"] {
+    background-color: #140C12;
+    color: #FAF9F6;
+  }
+
+  /* Lucky Stone Guru: Pearl White Tan & Warm Astrological Tan Base */
+  [data-brand="guru"],
+  body[data-brand="guru"],
+  #root[data-brand="guru"] {
+    background-color: #FAF8F5 !important;
+    color: #261D15 !important;
+  }
+
+  html.dark [data-brand="guru"],
+  html.dark body[data-brand="guru"],
+  html.dark #root[data-brand="guru"] {
+    background-color: #16120E !important;
+    color: #FAF8F5 !important;
+  }
+
+  h1, h2, h3, h4, h5, h6, .font-serif-royal, .font-editorial {
+    font-family: 'Candara', 'Candara Light', 'Calibri', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif !important;
+    letter-spacing: -0.01em;
   }
 }
 
-/* Warm Pastel Beige & Gold Glassmorphism Cards */
-.glass-card {
-  background: rgba(255, 255, 255, 0.82);
+/* ========================================================
+   BRAND THEME: SRI KAMALA JEWELLERS (DARK PURPLE & PEARL WHITE)
+   ======================================================== */
+[data-brand="jewellers"] .brand-accent {
+  color: #6B1D52 !important;
+}
+
+[data-brand="jewellers"] .brand-border {
+  border-color: rgba(107, 29, 82, 0.30) !important;
+}
+
+[data-brand="jewellers"] .brand-bg-light {
+  background-color: rgba(107, 29, 82, 0.08) !important;
+}
+
+[data-brand="jewellers"] .btn-magenta,
+[data-brand="jewellers"] .btn-brand,
+[data-brand="jewellers"] .btn-royal-crimson,
+[data-brand="jewellers"] .btn-dark-chocolate {
+  background: linear-gradient(135deg, #6B1D52 0%, #52153E 50%, #3B0E2C 100%) !important;
+  color: #FFFFFF !important;
+  border: 1px solid rgba(107, 29, 82, 0.50) !important;
+  box-shadow: 0 8px 24px -4px rgba(107, 29, 82, 0.40) !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-brand="jewellers"] .btn-magenta:hover,
+[data-brand="jewellers"] .btn-brand:hover,
+[data-brand="jewellers"] .btn-royal-crimson:hover,
+[data-brand="jewellers"] .btn-dark-chocolate:hover {
+  background: linear-gradient(135deg, #7E2260 0%, #6B1D52 50%, #451034 100%) !important;
+  transform: translateY(-1.5px);
+  box-shadow: 0 12px 28px -4px rgba(107, 29, 82, 0.50) !important;
+  border-color: rgba(255, 179, 219, 0.7) !important;
+}
+
+[data-brand="jewellers"] .btn-magenta-outline,
+[data-brand="jewellers"] .btn-brand-outline {
+  background: rgba(255, 255, 255, 0.90) !important;
+  color: #6B1D52 !important;
+  border: 1.5px solid #6B1D52 !important;
+  box-shadow: 0 4px 14px -2px rgba(107, 29, 82, 0.15) !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-brand="jewellers"] .btn-magenta-outline:hover,
+[data-brand="jewellers"] .btn-brand-outline:hover {
+  background: rgba(107, 29, 82, 0.08) !important;
+  border-color: #52153E !important;
+  transform: translateY(-1.5px);
+  box-shadow: 0 8px 20px -2px rgba(107, 29, 82, 0.25) !important;
+}
+
+[data-brand="jewellers"] .dock-item-active {
+  background: linear-gradient(135deg, #6B1D52 0%, #4A1238 100%) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 6px 20px -2px rgba(107, 29, 82, 0.45) !important;
+  transform: translateY(-1px) scale(1.02);
+}
+
+[data-brand="jewellers"] .dock-item-inactive:hover {
+  background: rgba(107, 29, 82, 0.08) !important;
+  color: #6B1D52 !important;
+}
+
+[data-brand="jewellers"] .glass-card {
+  background: rgba(255, 255, 255, 0.90);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1.5px solid rgba(212, 175, 55, 0.32);
+  border: 1.5px solid rgba(107, 29, 82, 0.22);
   box-shadow: 
-    0 10px 30px -5px rgba(180, 140, 50, 0.08),
+    0 10px 30px -5px rgba(107, 29, 82, 0.08),
     0 4px 12px 0 rgba(0, 0, 0, 0.03),
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.95);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.98);
 }
 
-.glass-card:hover {
-  transform: translateY(-3px);
-  border-color: rgba(212, 175, 55, 0.55);
+[data-brand="jewellers"] .glass-card:hover {
+  border-color: rgba(107, 29, 82, 0.55);
   box-shadow: 
-    0 18px 42px -6px rgba(180, 140, 50, 0.16),
+    0 18px 42px -6px rgba(107, 29, 82, 0.16),
     0 6px 16px 0 rgba(0, 0, 0, 0.04),
     inset 0 1px 2px 0 rgba(255, 255, 255, 1);
 }
 
-.glass-card-static {
-  background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1.5px solid rgba(212, 175, 55, 0.32);
-  box-shadow: 
-    0 10px 30px -5px rgba(180, 140, 50, 0.08),
-    0 4px 12px 0 rgba(0, 0, 0, 0.03),
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.95);
+[data-brand="jewellers"] .glass-card-magenta,
+[data-brand="jewellers"] .glass-card-gold {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(253, 242, 248, 0.90) 100%);
+  border: 1.5px solid rgba(107, 29, 82, 0.30);
+  box-shadow: 0 14px 40px -4px rgba(107, 29, 82, 0.12), inset 0 1px 2px 0 rgba(255, 255, 255, 1);
 }
 
-.glass-card-gold {
-  background: linear-gradient(135deg, rgba(255, 253, 247, 0.92) 0%, rgba(253, 247, 235, 0.86) 100%);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1.5px solid rgba(212, 175, 55, 0.48);
-  box-shadow: 
-    0 14px 40px -4px rgba(212, 175, 55, 0.16),
-    0 4px 14px 0 rgba(0, 0, 0, 0.03),
-    inset 0 1px 2px 0 rgba(255, 255, 255, 0.98);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+/* ========================================================
+   BRAND THEME: LUCKY STONE GURU (WARM ROYAL TAN & PEARL WHITE)
+   ======================================================== */
+[data-brand="guru"] .brand-accent,
+[data-brand="guru"] .text-\[\#CC338B\] {
+  color: #B38048 !important;
 }
 
-.glass-card-gold:hover {
-  transform: translateY(-3px);
-  border-color: rgba(212, 175, 55, 0.7);
-  box-shadow: 
-    0 22px 48px -6px rgba(212, 175, 55, 0.22),
-    inset 0 1px 2px 0 rgba(255, 255, 255, 1);
+[data-brand="guru"] .border-\[\#CC338B\]\/20,
+[data-brand="guru"] .border-\[\#CC338B\]\/25,
+[data-brand="guru"] .border-\[\#CC338B\]\/30,
+[data-brand="guru"] .border-\[\#CC338B\] {
+  border-color: rgba(179, 128, 72, 0.35) !important;
 }
 
-.glass-card-subtle {
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(220, 195, 140, 0.32);
-  box-shadow: 
-    0 6px 20px 0 rgba(190, 160, 90, 0.06),
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.85);
+[data-brand="guru"] .bg-\[\#CC338B\],
+[data-brand="guru"] .bg-\[\#CC338B\]\/10,
+[data-brand="guru"] .bg-\[\#CC338B\]\/5 {
+  background-color: rgba(179, 128, 72, 0.10) !important;
 }
 
-/* Royal Crimson Red Buttons */
-.btn-royal-crimson {
-  background: linear-gradient(135deg, #8B0000 0%, #A01020 50%, #700512 100%);
-  color: #FFFDF8;
-  border: 1px solid rgba(212, 175, 55, 0.4);
-  box-shadow: 0 8px 24px -4px rgba(139, 0, 0, 0.32);
+[data-brand="guru"] .btn-magenta,
+[data-brand="guru"] .btn-brand,
+[data-brand="guru"] .btn-tan-luxury,
+[data-brand="guru"] .btn-royal-crimson,
+[data-brand="guru"] .btn-dark-chocolate {
+  background: linear-gradient(135deg, #C59359 0%, #B38048 50%, #8F5E29 100%) !important;
+  color: #FFFFFF !important;
+  border: 1px solid rgba(179, 128, 72, 0.50) !important;
+  box-shadow: 0 8px 24px -4px rgba(179, 128, 72, 0.35) !important;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.btn-royal-crimson:hover {
-  background: linear-gradient(135deg, #9E0D1B 0%, #B81528 50%, #820817 100%);
+[data-brand="guru"] .btn-magenta:hover,
+[data-brand="guru"] .btn-brand:hover,
+[data-brand="guru"] .btn-tan-luxury:hover {
+  background: linear-gradient(135deg, #D4A36B 0%, #C59359 50%, #9E6B34 100%) !important;
   transform: translateY(-1.5px);
-  box-shadow: 0 12px 28px -4px rgba(139, 0, 0, 0.42);
-  border-color: rgba(255, 225, 140, 0.7);
+  box-shadow: 0 12px 28px -4px rgba(179, 128, 72, 0.45) !important;
+  border-color: rgba(255, 230, 200, 0.8) !important;
 }
 
-.btn-royal-crimson:active {
-  transform: scale(0.98);
+[data-brand="guru"] .btn-magenta-outline,
+[data-brand="guru"] .btn-brand-outline {
+  background: rgba(255, 255, 255, 0.90) !important;
+  color: #B38048 !important;
+  border: 1.5px solid #B38048 !important;
+  box-shadow: 0 4px 14px -2px rgba(179, 128, 72, 0.15) !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-brand="guru"] .btn-magenta-outline:hover,
+[data-brand="guru"] .btn-brand-outline:hover {
+  background: rgba(179, 128, 72, 0.10) !important;
+  border-color: #8F5E29 !important;
+  transform: translateY(-1.5px);
+  box-shadow: 0 8px 20px -2px rgba(179, 128, 72, 0.25) !important;
+}
+
+[data-brand="guru"] .dock-item-active {
+  background: linear-gradient(135deg, #C59359 0%, #B38048 100%) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 6px 20px -2px rgba(179, 128, 72, 0.45) !important;
+  transform: translateY(-1px) scale(1.02);
+}
+
+[data-brand="guru"] .dock-item-inactive:hover {
+  background: rgba(179, 128, 72, 0.10) !important;
+  color: #B38048 !important;
+}
+
+[data-brand="guru"] .glass-card {
+  background: rgba(255, 255, 255, 0.90);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1.5px solid rgba(179, 128, 72, 0.28) !important;
+  box-shadow: 
+    0 10px 30px -5px rgba(179, 128, 72, 0.10),
+    0 4px 12px 0 rgba(0, 0, 0, 0.03),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.98);
+}
+
+[data-brand="guru"] .glass-card:hover {
+  border-color: rgba(179, 128, 72, 0.60) !important;
+  box-shadow: 
+    0 18px 42px -6px rgba(179, 128, 72, 0.20),
+    0 6px 16px 0 rgba(0, 0, 0, 0.04),
+    inset 0 1px 2px 0 rgba(255, 255, 255, 1);
+}
+
+[data-brand="guru"] .glass-card-magenta,
+[data-brand="guru"] .glass-card-gold {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.96) 0%, rgba(251, 247, 240, 0.92) 100%) !important;
+  border: 1.5px solid rgba(179, 128, 72, 0.35) !important;
+  box-shadow: 0 14px 40px -4px rgba(179, 128, 72, 0.14), inset 0 1px 2px 0 rgba(255, 255, 255, 1) !important;
+}
+
+[data-brand="guru"] .apple-dock {
+  border-color: rgba(179, 128, 72, 0.35) !important;
+  box-shadow: 
+    0 14px 36px -6px rgba(179, 128, 72, 0.18),
+    0 4px 12px 0 rgba(0, 0, 0, 0.04),
+    inset 0 1px 2px 0 rgba(255, 255, 255, 0.9) !important;
+}
+
+/* General Glass Cards fallback */
+.glass-card {
+  background: rgba(255, 255, 255, 0.90);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1.5px solid rgba(107, 29, 82, 0.22);
+  box-shadow: 
+    0 10px 30px -5px rgba(107, 29, 82, 0.08),
+    0 4px 12px 0 rgba(0, 0, 0, 0.03),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.98);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card-static {
+  background: rgba(255, 255, 255, 0.90);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1.5px solid rgba(107, 29, 82, 0.22);
+  box-shadow: 
+    0 10px 30px -5px rgba(107, 29, 82, 0.08),
+    0 4px 12px 0 rgba(0, 0, 0, 0.03),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.98);
+}
+
+.glass-card-magenta,
+.glass-card-gold {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(253, 242, 248, 0.90) 100%);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1.5px solid rgba(107, 29, 82, 0.30);
+  box-shadow: 
+    0 14px 40px -4px rgba(107, 29, 82, 0.12),
+    0 4px 14px 0 rgba(0, 0, 0, 0.03),
+    inset 0 1px 2px 0 rgba(255, 255, 255, 1);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card-subtle {
+  background: rgba(255, 255, 255, 0.80);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(107, 29, 82, 0.18);
+  box-shadow: 
+    0 6px 20px 0 rgba(107, 29, 82, 0.05),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+/* Dark Mode Obsidian & Pearl Glassmorphism Cards */
+.dark .glass-card {
+  background: rgba(22, 16, 20, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1.5px solid rgba(107, 29, 82, 0.30);
+  box-shadow: 
+    0 10px 30px -5px rgba(0, 0, 0, 0.55),
+    0 4px 12px 0 rgba(0, 0, 0, 0.3),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+.dark .glass-card-magenta,
+.dark .glass-card-gold {
+  background: linear-gradient(135deg, rgba(35, 18, 28, 0.94) 0%, rgba(22, 12, 18, 0.90) 100%);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1.5px solid rgba(107, 29, 82, 0.40);
+  box-shadow: 
+    0 14px 40px -4px rgba(0, 0, 0, 0.65),
+    0 4px 14px 0 rgba(107, 29, 82, 0.18),
+    inset 0 1px 2px 0 rgba(107, 29, 82, 0.2);
+}
+
+.dark [data-brand="guru"] .glass-card {
+  background: rgba(26, 20, 16, 0.88) !important;
+  border-color: rgba(179, 128, 72, 0.35) !important;
+}
+
+.dark [data-brand="guru"] .glass-card-magenta,
+.dark [data-brand="guru"] .glass-card-gold {
+  background: linear-gradient(135deg, rgba(38, 28, 20, 0.94) 0%, rgba(26, 18, 12, 0.90) 100%) !important;
+  border-color: rgba(179, 128, 72, 0.45) !important;
+}
+
+/* Apple macOS Style Floating Dock */
+.apple-dock-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 40;
+}
+
+.apple-dock {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1.5px solid rgba(107, 29, 82, 0.25);
+  box-shadow: 
+    0 14px 36px -6px rgba(107, 29, 82, 0.14),
+    0 4px 12px 0 rgba(0, 0, 0, 0.04),
+    inset 0 1px 2px 0 rgba(255, 255, 255, 0.9);
+  border-radius: 9999px;
+  padding: 6px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dark .apple-dock {
+  background: rgba(24, 15, 21, 0.90);
+  border-color: rgba(107, 29, 82, 0.35);
+  box-shadow: 
+    0 16px 40px -6px rgba(0, 0, 0, 0.7),
+    0 4px 14px 0 rgba(107, 29, 82, 0.2),
+    inset 0 1px 2px 0 rgba(255, 255, 255, 0.08);
+}
+
+.dark [data-brand="guru"] .apple-dock {
+  background: rgba(26, 20, 16, 0.92) !important;
+  border-color: rgba(179, 128, 72, 0.40) !important;
+}
+
+.dock-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  user-select: none;
+}
+
+.dock-item:hover {
+  transform: translateY(-2px) scale(1.06);
+}
+
+.dock-item-active {
+  background: linear-gradient(135deg, #6B1D52 0%, #4A1238 100%);
+  color: #FFFFFF !important;
+  box-shadow: 0 6px 20px -2px rgba(107, 29, 82, 0.45);
+  transform: translateY(-1px) scale(1.02);
+}
+
+.dock-item-inactive {
+  color: #4A3C44;
+  background: transparent;
+}
+
+.dark .dock-item-inactive {
+  color: #E2D9DF;
+}
+
+.dock-item-inactive:hover {
+  background: rgba(107, 29, 82, 0.08);
+  color: #6B1D52;
+}
+
+/* Default Buttons */
+.btn-magenta,
+.btn-dark-chocolate,
+.btn-tan-luxury,
+.btn-royal-crimson {
+  background: linear-gradient(135deg, #6B1D52 0%, #52153E 50%, #3B0E2C 100%);
+  color: #FFFFFF !important;
+  border: 1px solid rgba(107, 29, 82, 0.50);
+  box-shadow: 0 8px 24px -4px rgba(107, 29, 82, 0.35);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-magenta:hover,
+.btn-dark-chocolate:hover,
+.btn-tan-luxury:hover,
+.btn-royal-crimson:hover {
+  background: linear-gradient(135deg, #7E2260 0%, #6B1D52 50%, #451034 100%);
+  transform: translateY(-1.5px);
+  box-shadow: 0 12px 28px -4px rgba(107, 29, 82, 0.45);
+}
+
+.btn-magenta-outline {
+  background: rgba(255, 255, 255, 0.9);
+  color: #6B1D52 !important;
+  border: 1.5px solid #6B1D52;
+  box-shadow: 0 4px 14px -2px rgba(107, 29, 82, 0.15);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Animations & Keyframes */
@@ -115,35 +441,6 @@
   }
   50% {
     transform: translateY(-8px) rotate(0.8deg);
-  }
-}
-
-@keyframes goldSheen {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
-}
-
-@keyframes sparkleTwinkle {
-  0%, 100% {
-    opacity: 0.2;
-    transform: scale(0.7) rotate(0deg);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.15) rotate(90deg);
-  }
-}
-
-@keyframes pulseGoldGlow {
-  0%, 100% {
-    box-shadow: 0 0 25px rgba(212, 175, 55, 0.2);
-  }
-  50% {
-    box-shadow: 0 0 45px rgba(212, 175, 55, 0.45);
   }
 }
 
@@ -162,16 +459,21 @@
   animation: jewelFloat 5s ease-in-out infinite;
 }
 
-.animate-sparkle {
-  animation: sparkleTwinkle 2.5s ease-in-out infinite;
-}
-
-.animate-gold-glow {
-  animation: pulseGoldGlow 3s ease-in-out infinite;
-}
-
 .animate-fade-in-up {
   animation: fadeInUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes spinSlow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spinSlow 20s linear infinite;
 }
 
 /* Custom luxury scrollbar */
@@ -179,73 +481,30 @@
   width: 7px;
   height: 7px;
 }
+
 ::-webkit-scrollbar-track {
   background: #F1ECE2;
 }
+
+.dark ::-webkit-scrollbar-track {
+  background: #18120B;
+}
+
 ::-webkit-scrollbar-thumb {
-  background: #D4AF37;
+  background: #B38048;
   border-radius: 9999px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
-  background: #B38728;
+  background: #8F5E29;
 }
 
 /* Hide scrollbar utility */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
-}
-
-/* Gemstone Shimmer Effect */
-@keyframes facetShine {
-  0% { transform: translateX(-150%) rotate(45deg); opacity: 0; }
-  50% { opacity: 0.7; }
-  100% { transform: translateX(200%) rotate(45deg); opacity: 0; }
-}
-
-.gem-facet-shine {
-  position: relative;
-  overflow: hidden;
-}
-
-.gem-facet-shine::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(
-    60deg,
-    transparent,
-    rgba(255, 255, 255, 0.65),
-    transparent
-  );
-  transform: translateX(-150%) rotate(45deg);
-  animation: facetShine 4s infinite ease-in-out;
-  pointer-events: none;
-}
-
-/* Gold Gradient utilities for pastel beige background */
-.text-gold-gradient {
-  background: linear-gradient(135deg, #8C6212 0%, #D4AF37 50%, #7A530D 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.text-gold-bright {
-  background: linear-gradient(135deg, #B58820 0%, #E6C65A 50%, #9F7215 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.bg-gold-gradient {
-  background: linear-gradient(135deg, #F3DF88 0%, #D4AF37 50%, #B58820 100%);
-}
-
-.bg-gold-subtle {
-  background: linear-gradient(135deg, rgba(247, 235, 195, 0.55) 0%, rgba(235, 212, 145, 0.4) 100%);
 }

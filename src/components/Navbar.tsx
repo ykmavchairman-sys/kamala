@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   Sparkles,
-  ShieldCheck,
   PhoneCall,
   Award,
   Compass,
@@ -10,15 +9,23 @@ import {
   TrendingUp,
   MapPin,
   Home,
-  MessageSquare
+  MessageSquare,
+  Flame,
+  Calendar
 } from 'lucide-react';
-import { LIVE_GOLD_RATES } from '../data/goldCatalog';
 import { bellPlayer } from '../utils/audioBell';
+import { ThemeToggle } from './ThemeToggle';
+import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../context/LanguageContext';
+import { LanguageSelector } from './LanguageSelector';
+import { useAppFormat, AppFormat } from '../context/FormatContext';
+import { FormatSwitcher } from './FormatSwitcher';
 
 export type AppTab =
   | 'home'
   | 'rates'
   | 'gold'
+  | 'schemes'
   | 'calculator'
   | 'dossier'
   | 'customizer'
@@ -41,387 +48,406 @@ export const Navbar: React.FC<Props> = ({
   hasReport,
   onOpenBooking,
 }) => {
+  const { isDark } = useTheme();
+  const { t } = useLanguage();
+  const { format, isJewellers, isGuru, setFormat } = useAppFormat();
+
   const handleTabClick = (tab: AppTab) => {
     bellPlayer.playBell(587);
     setActiveTab(tab);
   };
 
+  const handleFormatChange = (newFormat: AppFormat) => {
+    bellPlayer.playBell(659);
+    if (newFormat === 'jewellers') {
+      const guruTabs: AppTab[] = ['calculator', 'dossier', 'customizer', 'ritual', 'chat', 'admin'];
+      if (guruTabs.includes(activeTab)) {
+        setActiveTab('home');
+      }
+    } else {
+      const jewellerTabs: AppTab[] = ['home', 'rates', 'gold', 'schemes', 'contact', 'catalog'];
+      if (jewellerTabs.includes(activeTab)) {
+        setActiveTab(hasReport ? 'dossier' : 'calculator');
+      }
+    }
+  };
+
+  interface NavDockItem {
+    id: AppTab;
+    label: string;
+    sublabel: string;
+    icon: React.ComponentType<{ className?: string }>;
+    hasDot?: boolean;
+  }
+
+  // 5 Specific Pages for Sri Kamala Jewellers
+  const JEWELLERS_DOCK: NavDockItem[] = [
+    {
+      id: 'home',
+      label: t('nav_home', 'Home'),
+      sublabel: t('nav_home_sub', 'Flagship Overview'),
+      icon: Home,
+    },
+    {
+      id: 'rates',
+      label: t('nav_rates', 'Gold Rates'),
+      sublabel: t('nav_rates_sub', 'IBJA 22K/24K Bullion'),
+      icon: TrendingUp,
+    },
+    {
+      id: 'gold',
+      label: t('nav_gold', 'Jewels'),
+      sublabel: t('nav_gold_sub', '100% BIS 916 HUID'),
+      icon: Coins,
+    },
+    {
+      id: 'schemes',
+      label: t('nav_schemes', 'Monthly Schemes'),
+      sublabel: t('nav_schemes_sub', 'Live Rate Gold Passbook'),
+      icon: Calendar,
+    },
+    {
+      id: 'contact',
+      label: t('nav_showroom', 'Showroom & Contact'),
+      sublabel: t('nav_showroom_sub', 'Ballari Arch & Phone'),
+      icon: MapPin,
+    },
+  ];
+
+  // 6 Specific Pages for Lucky Stone Guru
+  const GURU_DOCK: NavDockItem[] = [
+    {
+      id: 'calculator',
+      label: t('nav_chart', 'Birth Chart'),
+      sublabel: t('nav_chart_sub', 'N.C. Lahiri D1/D9'),
+      icon: Compass,
+    },
+    {
+      id: 'dossier',
+      label: t('nav_stones', 'Lucky Stones'),
+      sublabel: t('nav_stones_sub', 'Vimshottari Gems'),
+      icon: Gem,
+      hasDot: hasReport,
+    },
+    {
+      id: 'customizer',
+      label: t('nav_atelier', 'Atelier'),
+      sublabel: t('nav_atelier_sub', 'Skin-Touch Bezel'),
+      icon: Sparkles,
+    },
+    {
+      id: 'ritual',
+      label: t('nav_ritual', 'Prana Pratishtha'),
+      sublabel: t('nav_ritual_sub', '1008-Mantra Ritual'),
+      icon: Flame,
+    },
+    {
+      id: 'chat',
+      label: t('nav_chat', 'Ask Astrologer'),
+      sublabel: 'Acharya Nukala Srinivas Rao',
+      icon: MessageSquare,
+    },
+    {
+      id: 'admin',
+      label: t('astrologer_desk', 'Astrologer Deck'),
+      sublabel: t('astrologer_desk_sub', 'Kundali CRM & Audits'),
+      icon: Award,
+    },
+  ];
+
+  const currentDock = isJewellers ? JEWELLERS_DOCK : GURU_DOCK;
+
   return (
     <>
-      <header className="sticky top-0 z-50 bg-[#F7F2EB]/95 backdrop-blur-xl border-b border-amber-300/60 shadow-[0_4px_30px_rgba(212,175,55,0.08)] transition-all">
-        {/* Top Auspicious Announcement Bar with Ballari Benchmark & Live Rate */}
-        <div className="bg-gradient-to-r from-[#FAF5E8] via-[#F4E9CD] to-[#FAF5E8] border-b border-amber-300/40 px-3 sm:px-6 py-1.5 text-[11px] text-[#5A4521] flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-2.5 mx-auto sm:mx-0 font-medium">
-            <span className="flex items-center gap-1.5 text-[#8B0000] font-black tracking-wide">
-              <Sparkles className="w-3.5 h-3.5 text-amber-600" /> SRI KAMALA JEWELLERS • BALLARI • ESTD. 1974
-            </span>
-            <span className="hidden md:inline text-amber-400">|</span>
-            <span className="hidden md:inline text-amber-950/80 font-medium">
-              Sanjay Gandhi Nagar Flagship • BIS Hallmark 916 Pure Gold
-            </span>
+      <header
+        className={`sticky top-0 z-50 backdrop-blur-xl border-b transition-colors duration-300 ${
+          isGuru
+            ? 'bg-[#FAF8F5]/95 dark:bg-[#16120E]/95 border-[#B38048]/25 shadow-[0_4px_24px_rgba(179,128,72,0.08)]'
+            : 'bg-[#FAF9F6]/95 dark:bg-[#140C12]/95 border-[#6B1D52]/20 shadow-[0_4px_24px_rgba(107,29,82,0.06)]'
+        }`}
+      >
+        {/* Section 1: Main Header Row */}
+        <div className="w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-15 sm:h-18 flex items-center justify-between gap-3 sm:gap-4">
+          {/* Left: Brand Identity with 1:1 Monogram & Full Leadership Names */}
+          <div
+            onClick={() => handleTabClick(isJewellers ? 'home' : (hasReport ? 'dossier' : 'calculator'))}
+            className="flex items-center gap-2.5 sm:gap-3.5 cursor-pointer group select-none min-w-0 shrink"
+          >
+            {/* 1:1 SKJ Lotus Monogram Logo */}
+            <div
+              className={`relative w-9 h-9 sm:w-11 sm:h-11 aspect-square rounded-xl sm:rounded-2xl p-[1.5px] transition-transform duration-300 group-hover:scale-105 shrink-0 shadow-md ${
+                isGuru
+                  ? 'bg-gradient-to-br from-[#FAF8F5] via-[#C59359] to-[#8F5E29]'
+                  : 'bg-gradient-to-br from-[#FDF2F8] via-[#6B1D52] to-[#3B0E2C]'
+              }`}
+            >
+              <div
+                className={`w-full h-full aspect-square bg-white dark:bg-stone-900 rounded-[10px] sm:rounded-[14px] overflow-hidden flex items-center justify-center p-0.5 border ${
+                  isGuru ? 'border-[#B38048]/30' : 'border-[#6B1D52]/30'
+                }`}
+              >
+                <img
+                  src="/assets/aistudio/Golden_Lotus_Emblem_with_SKJ_Monogram_31db152a.png"
+                  alt="Sri Kamala Jewellers Logo"
+                  className="w-full h-full aspect-square object-contain"
+                />
+              </div>
+              <span
+                className={`absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border border-white dark:border-stone-900 animate-pulse shadow-xs ${
+                  isGuru ? 'bg-[#B38048]' : 'bg-[#6B1D52]'
+                }`}
+              />
+            </div>
+
+            {/* In-Line Brand Name and Strict Leadership Attribution */}
+            <div className="flex flex-col justify-center min-w-0">
+              <div className="flex items-center gap-2 whitespace-nowrap min-w-0">
+                <span className="text-sm sm:text-lg lg:text-xl font-black tracking-wide leading-none truncate text-[#21181E] dark:text-[#FAF9F6]">
+                  {isJewellers
+                    ? t('brand_name', 'SRI KAMALA JEWELLERS')
+                    : t('format_guru_title', 'LUCKY STONE GURU')}
+                </span>
+                <span className={`hidden lg:inline font-bold ${isGuru ? 'text-[#B38048]/40' : 'text-[#6B1D52]/40'}`}>•</span>
+                <span
+                  className={`hidden lg:inline text-[11px] tracking-wider uppercase font-bold leading-none ${
+                    isGuru ? 'text-[#B38048] dark:text-[#D4A373]' : 'text-[#6B1D52] dark:text-purple-300'
+                  }`}
+                >
+                  {isJewellers
+                    ? 'Nukala Srinivas Rao & Nukala Manoj • Ballari'
+                    : 'Nukala Srinivas Rao • Vedic Jyotish & Gems'}
+                </span>
+              </div>
+              <span
+                className={`lg:hidden text-[9px] sm:text-[10px] tracking-wide font-black truncate leading-tight mt-0.5 ${
+                  isGuru ? 'text-[#B38048] dark:text-[#D4A373]' : 'text-[#6B1D52] dark:text-purple-300'
+                }`}
+              >
+                {isJewellers
+                  ? 'Nukala Srinivas Rao & Nukala Manoj'
+                  : 'Nukala Srinivas Rao'}
+              </span>
+            </div>
           </div>
 
-          <div className="flex items-center gap-3 mx-auto sm:mx-0 text-xs font-semibold">
-            {/* Live Ticker Mini Button */}
-            <button
-              onClick={() => handleTabClick('rates')}
-              className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/90 border border-amber-300 text-stone-900 hover:bg-amber-100 transition shadow-2xs cursor-pointer"
-            >
-              <TrendingUp className="w-3 h-3 text-emerald-600" />
-              <span>IBJA 22K: <strong className="text-[#8B0000]">₹{LIVE_GOLD_RATES.rate22KPerGram.toLocaleString('en-IN')}/g</strong></span>
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse ml-0.5" />
-            </button>
+          {/* Center: Format Switcher (Kamala Jewellers ⇄ Lucky Stone Guru) */}
+          <div className="flex items-center justify-center shrink-0">
+            <FormatSwitcher variant="pill" onFormatChange={handleFormatChange} />
+          </div>
 
-            <button
-              onClick={() => handleTabClick('admin')}
-              className="flex items-center gap-1 text-amber-950 hover:text-[#8B0000] font-bold text-xs bg-amber-200/70 hover:bg-amber-300 px-2.5 py-0.5 rounded-full border border-amber-300 transition cursor-pointer shadow-2xs"
-            >
-              <Award className="w-3 h-3 text-[#8B0000]" /> Astrologer Desk
-            </button>
+          {/* Right: In-Line Utilities & Actions */}
+          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+            {/* 4-Language Selector (Kannada, Telugu, English, Hindi) */}
+            <LanguageSelector variant="pill" />
 
+            {/* Theme Toggle */}
+            <ThemeToggle variant="compact" />
+
+            {/* Book Consultation Button */}
             <button
-              onClick={onOpenBooking}
-              className="hidden sm:flex items-center gap-1 text-amber-900 hover:text-[#8B0000] font-bold underline underline-offset-2 transition cursor-pointer"
+              onClick={() => {
+                bellPlayer.playBell(587);
+                onOpenBooking();
+              }}
+              className="inline-flex items-center gap-1 sm:gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-black text-[11px] sm:text-xs uppercase tracking-wider hover:brightness-110 active:scale-98 transition-all cursor-pointer shadow-md whitespace-nowrap btn-magenta text-white"
+              title="Book Video Consultation with Acharya Nukala Srinivas Rao"
             >
-              <PhoneCall className="w-3 h-3" /> Book Call
+              <PhoneCall className="w-3.5 h-3.5 text-white shrink-0" />
+              <span className="hidden sm:inline">{t('book_consultation', 'Book Consultation')}</span>
+              <span className="sm:hidden">{t('consult_short', 'Consult')}</span>
             </button>
           </div>
         </div>
 
-        {/* Main Luxury Brand Bar */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-3">
-          {/* Brand Identity with User Uploaded Logo (1:1 Small Size) */}
-          <div
-            onClick={() => handleTabClick('home')}
-            className="flex items-center gap-3 cursor-pointer group select-none"
+        {/* Section 2: Floating Apple macOS-Style Dock Header (Centered Directly Below Main Header) */}
+        <div
+          className={`w-full flex justify-center items-center py-2 sm:py-2.5 px-3 border-t bg-gradient-to-b from-white/60 via-white/40 to-transparent transition-colors duration-300 ${
+            isGuru
+              ? 'border-[#B38048]/20 dark:from-[#16120E]/60 dark:to-transparent'
+              : 'border-[#6B1D52]/15 dark:from-[#140C12]/60 dark:to-transparent'
+          }`}
+        >
+          <nav
+            className={`apple-dock inline-flex items-center gap-1 sm:gap-2 px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-full backdrop-blur-2xl border max-w-full overflow-x-auto no-scrollbar transition-all duration-300 ${
+              isGuru
+                ? 'bg-white/95 dark:bg-[#1A140F]/95 border-[#B38048]/35 shadow-[0_8px_28px_rgba(179,128,72,0.15)]'
+                : 'bg-white/95 dark:bg-[#1A1017]/95 border-[#6B1D52]/30 shadow-[0_8px_28px_rgba(107,29,82,0.14)]'
+            }`}
           >
-            {/* 1:1 Small Square SKJ Lotus Logo Emblem */}
-            <div className="relative w-11 h-11 aspect-square rounded-2xl bg-gradient-to-br from-[#F5E29D] via-[#D4AF37] to-[#A37B1E] p-[1.5px] shadow-[0_3px_12px_rgba(212,175,55,0.25)] group-hover:scale-105 transition-transform duration-300 shrink-0">
-              <div className="w-full h-full aspect-square bg-white rounded-[14px] overflow-hidden flex items-center justify-center p-1 border border-amber-200">
-                <img
-                  src="/assets/aistudio/Golden_Lotus_Emblem_with_SKJ_Monogram_31db152a.png"
-                  alt="Sri Kamala Jewellers (SKJ) Logo"
-                  className="w-full h-full aspect-square object-contain"
-                />
-              </div>
-              <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-amber-400 border border-white animate-pulse" />
-            </div>
+            {currentDock.map((item) => {
+              const Icon = item.icon;
+              const isActive = activeTab === item.id;
 
-            <div>
-              <div className="flex items-center gap-1">
-                <span className="font-serif-royal text-lg sm:text-2xl font-black tracking-wider text-gold-gradient leading-none">
-                  SRI KAMALA JEWELLERS
-                </span>
-              </div>
-              <p className="text-[10px] sm:text-xs tracking-wider uppercase font-bold text-amber-900/80 mt-0.5">
-                LUCKY STONE GURU & FINE JEWELLERY • BALLARI
-              </p>
-            </div>
-          </div>
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => handleTabClick(item.id)}
+                  title={`${item.label} - ${item.sublabel}`}
+                  className={`dock-item group shrink-0 flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs font-bold transition-all duration-200 cursor-pointer ${
+                    isActive
+                      ? 'dock-item-active text-white'
+                      : 'dock-item-inactive'
+                  }`}
+                >
+                  <Icon
+                    className={`w-3.5 h-3.5 sm:w-4 sm:h-4 transition-transform duration-200 group-hover:scale-115 ${
+                      isActive ? 'text-white' : (isGuru ? 'text-[#B38048]' : 'text-[#6B1D52]')
+                    }`}
+                  />
+                  <span className="text-[11px] sm:text-xs font-bold tracking-tight whitespace-nowrap">
+                    {item.label}
+                  </span>
 
-          {/* Desktop/Laptop Primary Navigation (Full Viewport) */}
-          <nav className="hidden 2xl:flex items-center gap-1 text-xs font-semibold">
+                  {/* Active Indicator Dot (Apple macOS Dock Style) */}
+                  {isActive ? (
+                    <span className="w-1.5 h-1.5 rounded-full bg-white shadow-xs ml-0.5" />
+                  ) : item.hasDot ? (
+                    <span
+                      className={`w-1.5 h-1.5 rounded-full ml-0.5 animate-pulse ${
+                        isGuru ? 'bg-[#B38048]' : 'bg-[#6B1D52]'
+                      }`}
+                    />
+                  ) : null}
+                </button>
+              );
+            })}
+          </nav>
+        </div>
+      </header>
+
+      {/* Floating Mobile Bottom Navigation Bar */}
+      <nav
+        className={`fixed bottom-0 left-0 right-0 z-40 sm:hidden backdrop-blur-xl border-t px-2 py-2 flex items-center justify-around print:hidden transition-colors duration-300 ${
+          isGuru
+            ? 'border-[#B38048]/25 bg-[#FAF8F5]/98 dark:bg-[#16120E]/98 shadow-[0_-4px_20px_rgba(179,128,72,0.1)]'
+            : 'border-[#6B1D52]/20 bg-[#FAF9F6]/98 dark:bg-[#140C12]/98 shadow-[0_-4px_20px_rgba(107,29,82,0.1)]'
+        }`}
+      >
+        {isJewellers ? (
+          <>
             <button
               onClick={() => handleTabClick('home')}
-              className={`px-3 py-2 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
+              className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition ${
                 activeTab === 'home'
-                  ? 'bg-[#8B0000] text-amber-100 font-bold shadow-sm'
-                  : 'text-stone-700 hover:text-amber-900 hover:bg-amber-50/70'
+                  ? 'text-[#6B1D52] font-black scale-105'
+                  : 'text-stone-600 dark:text-stone-400 font-bold'
               }`}
             >
-              <Home className="w-3.5 h-3.5" />
-              Home
+              <Home className="w-4 h-4" />
+              <span className="text-[10px] mt-0.5">{t('nav_home', 'Home')}</span>
             </button>
 
             <button
               onClick={() => handleTabClick('rates')}
-              className={`px-3 py-2 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
+              className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition ${
                 activeTab === 'rates'
-                  ? 'bg-[#8B0000] text-amber-100 font-bold shadow-sm'
-                  : 'text-stone-700 hover:text-amber-900 hover:bg-amber-50/70 font-semibold'
+                  ? 'text-[#6B1D52] font-black scale-105'
+                  : 'text-stone-600 dark:text-stone-400 font-bold'
               }`}
             >
-              <TrendingUp className="w-3.5 h-3.5 text-amber-600" />
-              Live Gold Rates
+              <TrendingUp className="w-4 h-4" />
+              <span className="text-[10px] mt-0.5">{t('nav_rates', 'Rates')}</span>
             </button>
 
             <button
               onClick={() => handleTabClick('gold')}
-              className={`px-3 py-2 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
+              className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition ${
                 activeTab === 'gold'
-                  ? 'bg-gradient-to-r from-amber-400 to-amber-500 text-stone-950 font-black shadow-sm ring-1 ring-amber-300'
-                  : 'text-amber-950 bg-amber-50/90 border border-amber-300/80 hover:bg-amber-100 font-bold'
+                  ? 'text-[#6B1D52] font-black scale-105'
+                  : 'text-stone-600 dark:text-stone-400 font-bold'
               }`}
             >
-              <Coins className="w-3.5 h-3.5 text-amber-700" />
-              Gold Jewellery
+              <Coins className="w-4 h-4" />
+              <span className="text-[10px] mt-0.5">{t('nav_gold', 'Jewels')}</span>
             </button>
 
             <button
-              onClick={() => handleTabClick('calculator')}
-              className={`px-3 py-2 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
-                activeTab === 'calculator'
-                  ? 'bg-amber-100/90 text-amber-950 border border-amber-300 shadow-sm font-bold'
-                  : 'text-stone-700 hover:text-amber-900 hover:bg-amber-50/70'
+              onClick={() => handleTabClick('schemes')}
+              className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition ${
+                activeTab === 'schemes'
+                  ? 'text-[#6B1D52] font-black scale-105'
+                  : 'text-stone-600 dark:text-stone-400 font-bold'
               }`}
             >
-              <Compass className="w-3.5 h-3.5 text-amber-600" />
-              Birth Chart
-            </button>
-
-            <button
-              onClick={() => handleTabClick('dossier')}
-              className={`px-3 py-2 rounded-xl transition-all flex items-center gap-1.5 relative cursor-pointer ${
-                activeTab === 'dossier'
-                  ? 'bg-amber-100/90 text-amber-950 border border-amber-300 shadow-sm font-bold'
-                  : 'text-stone-700 hover:text-amber-900 hover:bg-amber-50/70'
-              }`}
-            >
-              <Gem className="w-3.5 h-3.5 text-amber-600" />
-              Lucky Stones
-              {hasReport && (
-                <span className="w-2 h-2 rounded-full bg-emerald-500 absolute top-1.5 right-1.5 animate-ping" />
-              )}
-            </button>
-
-            <button
-              onClick={() => handleTabClick('customizer')}
-              className={`px-3 py-2 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
-                activeTab === 'customizer'
-                  ? 'bg-amber-100/90 text-amber-950 border border-amber-300 shadow-sm font-bold'
-                  : 'text-stone-700 hover:text-amber-900 hover:bg-amber-50/70'
-              }`}
-            >
-              <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-              Atelier
-            </button>
-
-            <button
-              onClick={() => handleTabClick('ritual')}
-              className={`px-3 py-2 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
-                activeTab === 'ritual'
-                  ? 'bg-amber-100/90 text-amber-950 border border-amber-300 shadow-sm font-bold'
-                  : 'text-stone-700 hover:text-amber-900 hover:bg-amber-50/70'
-              }`}
-            >
-              <Award className="w-3.5 h-3.5 text-amber-600" />
-              Prana Pratishtha
-            </button>
-
-            <button
-              onClick={() => handleTabClick('chat')}
-              className={`px-3 py-2 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
-                activeTab === 'chat'
-                  ? 'bg-amber-100/90 text-amber-950 border border-amber-300 shadow-sm font-bold'
-                  : 'text-stone-700 hover:text-amber-900 hover:bg-amber-50/70'
-              }`}
-            >
-              Ask Nukala Srinivasrao
+              <Calendar className="w-4 h-4" />
+              <span className="text-[10px] mt-0.5">{t('nav_schemes', 'Schemes')}</span>
             </button>
 
             <button
               onClick={() => handleTabClick('contact')}
-              className={`px-3 py-2 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
+              className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition ${
                 activeTab === 'contact'
-                  ? 'bg-amber-100/90 text-amber-950 border border-amber-300 shadow-sm font-bold'
-                  : 'text-stone-700 hover:text-amber-900 hover:bg-amber-50/70'
+                  ? 'text-[#6B1D52] font-black scale-105'
+                  : 'text-stone-600 dark:text-stone-400 font-bold'
               }`}
             >
-              <MapPin className="w-3.5 h-3.5 text-amber-600" />
-              Ballari Showroom
+              <MapPin className="w-4 h-4" />
+              <span className="text-[10px] mt-0.5">{t('nav_showroom', 'Contact')}</span>
+            </button>
+          </>
+        ) : (
+          <>
+            <button
+              onClick={() => handleTabClick('calculator')}
+              className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition ${
+                activeTab === 'calculator'
+                  ? 'text-[#B38048] font-black scale-105'
+                  : 'text-stone-600 dark:text-stone-400 font-bold'
+              }`}
+            >
+              <Compass className="w-4 h-4" />
+              <span className="text-[10px] mt-0.5">{t('nav_chart', 'Kundali')}</span>
             </button>
 
             <button
-              onClick={() => handleTabClick('admin')}
-              className={`px-3 py-2 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
-                activeTab === 'admin'
-                  ? 'bg-[#8B0000] text-amber-100 font-bold shadow-sm'
-                  : 'text-amber-950 bg-amber-200/50 hover:bg-amber-200 font-bold border border-amber-300/80'
+              onClick={() => handleTabClick('dossier')}
+              className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition ${
+                activeTab === 'dossier'
+                  ? 'text-[#B38048] font-black scale-105'
+                  : 'text-stone-600 dark:text-stone-400 font-bold'
               }`}
             >
-              <Award className="w-3.5 h-3.5 text-[#8B0000]" />
-              Astrologer Portal
+              <Gem className="w-4 h-4" />
+              <span className="text-[10px] mt-0.5">{t('nav_stones', 'Stones')}</span>
             </button>
-          </nav>
 
-          {/* Action Trigger */}
-          <div className="flex items-center gap-2">
             <button
-              onClick={onOpenBooking}
-              className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-xl bg-gradient-to-r from-[#8B0000] via-[#A01020] to-[#700512] text-white font-bold text-xs uppercase tracking-wider hover:brightness-110 active:scale-98 shadow-[0_4px_16px_rgba(139,0,0,0.3)] transition-all cursor-pointer border border-amber-300/40"
+              onClick={() => handleTabClick('customizer')}
+              className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition ${
+                activeTab === 'customizer'
+                  ? 'text-[#B38048] font-black scale-105'
+                  : 'text-stone-600 dark:text-stone-400 font-bold'
+              }`}
             >
-              <PhoneCall className="w-3.5 h-3.5 text-amber-300" />
-              <span className="hidden sm:inline">Book Consultation</span>
-              <span className="sm:hidden">Consult</span>
+              <Sparkles className="w-4 h-4" />
+              <span className="text-[10px] mt-0.5">{t('nav_atelier', 'Atelier')}</span>
             </button>
-          </div>
-        </div>
 
-        {/* Responsive Horizontal Scrollable Subnav for Tabs, Laptops, and Mobiles */}
-        <div className="flex 2xl:hidden overflow-x-auto py-2 px-3 border-t border-amber-200/60 gap-1.5 text-xs no-scrollbar bg-white/95 backdrop-blur-md shadow-inner">
-          <button
-            onClick={() => handleTabClick('home')}
-            className={`whitespace-nowrap px-3 py-1.5 rounded-full flex items-center gap-1 font-semibold cursor-pointer shrink-0 ${
-              activeTab === 'home'
-                ? 'bg-[#8B0000] text-amber-100 shadow-xs'
-                : 'text-stone-700 bg-amber-50/80 border border-amber-200/50'
-            }`}
-          >
-            <Home className="w-3 h-3" /> Home
-          </button>
+            <button
+              onClick={() => handleTabClick('ritual')}
+              className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition ${
+                activeTab === 'ritual'
+                  ? 'text-[#B38048] font-black scale-105'
+                  : 'text-stone-600 dark:text-stone-400 font-bold'
+              }`}
+            >
+              <Flame className="w-4 h-4" />
+              <span className="text-[10px] mt-0.5">{t('nav_ritual', 'Ritual')}</span>
+            </button>
 
-          <button
-            onClick={() => handleTabClick('rates')}
-            className={`whitespace-nowrap px-3 py-1.5 rounded-full flex items-center gap-1 font-bold cursor-pointer shrink-0 ${
-              activeTab === 'rates'
-                ? 'bg-[#8B0000] text-amber-100 shadow-xs'
-                : 'text-amber-900 bg-amber-100/90 border border-amber-300'
-            }`}
-          >
-            <TrendingUp className="w-3 h-3 text-amber-600" /> Live Gold Rates
-          </button>
-
-          <button
-            onClick={() => handleTabClick('gold')}
-            className={`whitespace-nowrap px-3 py-1.5 rounded-full flex items-center gap-1 font-bold cursor-pointer shrink-0 ${
-              activeTab === 'gold'
-                ? 'bg-gradient-to-r from-amber-400 to-amber-500 text-stone-950 shadow-xs ring-1 ring-amber-300'
-                : 'text-amber-950 bg-amber-50/90 border border-amber-300'
-            }`}
-          >
-            <Coins className="w-3 h-3 text-amber-700" /> Gold Jewellery
-          </button>
-
-          <button
-            onClick={() => handleTabClick('calculator')}
-            className={`whitespace-nowrap px-3 py-1.5 rounded-full flex items-center gap-1 font-semibold cursor-pointer shrink-0 ${
-              activeTab === 'calculator'
-                ? 'bg-amber-500 text-stone-950 shadow-xs'
-                : 'text-stone-700 bg-amber-50/80 border border-amber-200/50'
-            }`}
-          >
-            <Compass className="w-3 h-3" /> Birth Chart
-          </button>
-
-          <button
-            onClick={() => handleTabClick('dossier')}
-            className={`whitespace-nowrap px-3 py-1.5 rounded-full flex items-center gap-1 font-semibold cursor-pointer shrink-0 ${
-              activeTab === 'dossier'
-                ? 'bg-amber-500 text-stone-950 shadow-xs'
-                : 'text-stone-700 bg-amber-50/80 border border-amber-200/50'
-            }`}
-          >
-            <Gem className="w-3 h-3" /> Lucky Stones {hasReport && '•'}
-          </button>
-
-          <button
-            onClick={() => handleTabClick('customizer')}
-            className={`whitespace-nowrap px-3 py-1.5 rounded-full flex items-center gap-1 font-semibold cursor-pointer shrink-0 ${
-              activeTab === 'customizer'
-                ? 'bg-amber-500 text-stone-950 shadow-xs'
-                : 'text-stone-700 bg-amber-50/80 border border-amber-200/50'
-            }`}
-          >
-            <Sparkles className="w-3 h-3" /> Atelier
-          </button>
-
-          <button
-            onClick={() => handleTabClick('ritual')}
-            className={`whitespace-nowrap px-3 py-1.5 rounded-full flex items-center gap-1 font-semibold cursor-pointer shrink-0 ${
-              activeTab === 'ritual'
-                ? 'bg-amber-500 text-stone-950 shadow-xs'
-                : 'text-stone-700 bg-amber-50/80 border border-amber-200/50'
-            }`}
-          >
-            <Award className="w-3 h-3" /> Rituals
-          </button>
-
-          <button
-            onClick={() => handleTabClick('catalog')}
-            className={`whitespace-nowrap px-3 py-1.5 rounded-full flex items-center gap-1 font-semibold cursor-pointer shrink-0 ${
-              activeTab === 'catalog'
-                ? 'bg-amber-500 text-stone-950 shadow-xs'
-                : 'text-stone-700 bg-amber-50/80 border border-amber-200/50'
-            }`}
-          >
-            Gems
-          </button>
-
-          <button
-            onClick={() => handleTabClick('chat')}
-            className={`whitespace-nowrap px-3 py-1.5 rounded-full flex items-center gap-1 font-semibold cursor-pointer shrink-0 ${
-              activeTab === 'chat'
-                ? 'bg-amber-500 text-stone-950 shadow-xs'
-                : 'text-stone-700 bg-amber-50/80 border border-amber-200/50'
-            }`}
-          >
-            Astrologer Nukala
-          </button>
-
-          <button
-            onClick={() => handleTabClick('contact')}
-            className={`whitespace-nowrap px-3 py-1.5 rounded-full flex items-center gap-1 font-semibold cursor-pointer shrink-0 ${
-              activeTab === 'contact'
-                ? 'bg-[#8B0000] text-white shadow-xs'
-                : 'text-stone-700 bg-amber-50/80 border border-amber-200/50'
-            }`}
-          >
-            <MapPin className="w-3 h-3 text-amber-600" /> Ballari Showroom
-          </button>
-        </div>
-      </header>
-
-      {/* Floating Mobile Bottom Navigation Bar (Convenient One-Thumb Navigation for Smartphones) */}
-      <nav className="fixed bottom-0 left-0 right-0 z-40 sm:hidden bg-[#F7F2EB]/95 backdrop-blur-xl border-t border-amber-300/60 shadow-[0_-4px_20px_rgba(0,0,0,0.06)] px-2 py-1.5 flex items-center justify-around print:hidden">
-        <button
-          onClick={() => handleTabClick('home')}
-          className={`flex flex-col items-center justify-center py-1 px-2 rounded-xl transition ${
-            activeTab === 'home' ? 'text-[#8B0000] font-black' : 'text-stone-600'
-          }`}
-        >
-          <Home className="w-4 h-4" />
-          <span className="text-[10px] mt-0.5">Home</span>
-        </button>
-
-        <button
-          onClick={() => handleTabClick('rates')}
-          className={`flex flex-col items-center justify-center py-1 px-2 rounded-xl transition ${
-            activeTab === 'rates' ? 'text-[#8B0000] font-black' : 'text-stone-600'
-          }`}
-        >
-          <TrendingUp className="w-4 h-4 text-amber-600" />
-          <span className="text-[10px] mt-0.5">Rates</span>
-        </button>
-
-        <button
-          onClick={() => handleTabClick('gold')}
-          className={`flex flex-col items-center justify-center py-1 px-2 rounded-xl transition ${
-            activeTab === 'gold' ? 'text-[#8B0000] font-black' : 'text-stone-600'
-          }`}
-        >
-          <Coins className="w-4 h-4 text-amber-600" />
-          <span className="text-[10px] mt-0.5">Jewellery</span>
-        </button>
-
-        <button
-          onClick={() => handleTabClick('calculator')}
-          className={`flex flex-col items-center justify-center py-1 px-2 rounded-xl transition ${
-            activeTab === 'calculator' || activeTab === 'dossier' ? 'text-[#8B0000] font-black' : 'text-stone-600'
-          }`}
-        >
-          <Gem className="w-4 h-4 text-amber-600" />
-          <span className="text-[10px] mt-0.5">Kundali</span>
-        </button>
-
-        <button
-          onClick={() => handleTabClick('contact')}
-          className={`flex flex-col items-center justify-center py-1 px-2 rounded-xl transition ${
-            activeTab === 'contact' ? 'text-[#8B0000] font-black' : 'text-stone-600'
-          }`}
-        >
-          <MapPin className="w-4 h-4 text-amber-600" />
-          <span className="text-[10px] mt-0.5">Ballari</span>
-        </button>
+            <button
+              onClick={() => handleTabClick('chat')}
+              className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition ${
+                activeTab === 'chat'
+                  ? 'text-[#B38048] font-black scale-105'
+                  : 'text-stone-600 dark:text-stone-400 font-bold'
+              }`}
+            >
+              <MessageSquare className="w-4 h-4" />
+              <span className="text-[10px] mt-0.5">{t('nav_chat', 'Astrologer')}</span>
+            </button>
+          </>
+        )}
       </nav>
     </>
   );

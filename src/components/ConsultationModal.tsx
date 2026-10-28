@@ -73,7 +73,7 @@ export const ConsultationModal: React.FC<Props> = ({
             </div>
 
             <p className="text-xs text-stone-600 mt-1 leading-relaxed font-medium">
-              Verify your Kundali, planetary dasha periods, and skin-touch gemstone mounting directly with senior astrologer Nukala Srinivasrao at Sri Kamala Jewellers (Estd. 1974).
+              Verify your Kundali, planetary dasha periods, and skin-touch gemstone mounting directly with Chief Astrologer Nukala Srinivas Rao at Lucky Stone Guru & Sri Kamala Jewellers (Estd. 1974).
             </p>
 
             <form onSubmit={handleSubmit} className="mt-5 space-y-4 text-xs font-semibold">

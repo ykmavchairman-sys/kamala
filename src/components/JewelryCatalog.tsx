@@ -29,10 +29,10 @@ export const JewelryCatalog: React.FC<Props> = ({ onCustomizeItem }) => {
       <div className="text-center max-w-3xl mx-auto">
         <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-100/90 border border-amber-300 text-amber-900 text-xs font-bold mb-3 shadow-xs">
           <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-          GOVT. REGISTERED & IGI CERTIFIED
+          GOVT. REGISTERED & IGI CERTIFIED • LUCKY STONE GURU
         </div>
         <h2 className="font-serif-royal text-2xl sm:text-4xl font-extrabold text-stone-900">
-          Sri Kamala <span className="text-gold-gradient">Master Jewelry Collection</span>
+          Lucky Stone Guru <span className="text-gold-gradient">& Sri Kamala Jewellery</span>
         </h2>
         <p className="text-stone-600 text-xs sm:text-sm mt-2 leading-relaxed font-medium">
           Exquisite heirloom jewellery engineered for divine astrological resonance. Each creation features our signature open-back Vedic skin-contact setting with 100% natural, untreated, unheated gemstones.

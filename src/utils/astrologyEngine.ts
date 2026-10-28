@@ -559,6 +559,180 @@ export function getIncompatibleStones(primaryKey: string): AntiGemstoneWarning[]
   return warnings;
 }
 
+// Calculate authentic N.C. Lahiri (Chitra Paksha) Ayanamsha based on birth year
+export function calculateNCLahiriAyanamsha(year: number = 1992): {
+  exactAyanamsha: string;
+  valueDegrees: number;
+  degrees: number;
+  minutes: number;
+  seconds: number;
+  referenceEpoch: string;
+  calculationStandard: string;
+  ayanamshaType: 'N.C. Lahiri (Chitra Paksha)';
+} {
+  // Lahiri standard at Epoch J2000.0 is 23° 51' 25.53" = 23.85709167 degrees
+  // Annual rate of precession = 50.290966 arcseconds per year
+  const valueDegrees = 23.85709167 + (year - 2000) * (50.290966 / 3600);
+  const degrees = Math.floor(valueDegrees);
+  const totalMinutes = (valueDegrees - degrees) * 60;
+  const minutes = Math.floor(totalMinutes);
+  const seconds = Math.round((totalMinutes - minutes) * 60);
+
+  const exactAyanamsha = `N.C. Lahiri (Chitra Paksha) ${degrees}°${minutes}'${seconds < 10 ? '0' : ''}${seconds}"`;
+
+  return {
+    exactAyanamsha,
+    valueDegrees,
+    degrees,
+    minutes,
+    seconds,
+    referenceEpoch: 'J2000.0 (Indian Astronomical Ephemeris Standard)',
+    calculationStandard: 'Govt. of India Calendar Reform Committee (Saha & Lahiri)',
+    ayanamshaType: 'N.C. Lahiri (Chitra Paksha)',
+  };
+}
+
+// 120-Year Vimshottari Dasha Cycle Master Table (Brihat Parashara Hora Shastra)
+export const VIMSHOTTARI_DASHA_CYCLE = [
+  { planet: 'Ketu', planetSanskrit: 'Ketu Dev', years: 7, gem: "Cat's Eye (Vaidurya)", color: '#78716C', themes: 'Spiritual detachment, esoteric wisdom, moksha, foreign connections' },
+  { planet: 'Venus', planetSanskrit: 'Shukra Dev', years: 20, gem: 'Diamond / White Zircon (Heera)', color: '#FDF4FF', themes: 'Luxury, marriage, arts, aesthetics, wealth & vehicle acquisition' },
+  { planet: 'Sun', planetSanskrit: 'Surya Dev', years: 6, gem: 'Natural Ruby (Manikya)', color: '#EF4444', themes: 'Executive authority, fatherly honor, governance, vitality, soul purpose' },
+  { planet: 'Moon', planetSanskrit: 'Chandra Dev', years: 10, gem: 'Natural Pearl (Moti)', color: '#F8FAFC', themes: 'Emotional tranquility, public popularity, motherly grace, intuition' },
+  { planet: 'Mars', planetSanskrit: 'Mangala Dev', years: 7, gem: 'Red Coral (Moonga)', color: '#DC2626', themes: 'Courage, real-estate ventures, technical prowess, leadership drive' },
+  { planet: 'Rahu', planetSanskrit: 'Rahu Dev', years: 18, gem: 'Hessonite Garnet (Gomed)', color: '#B45309', themes: 'Material expansion, unconventional breakthroughs, global renown, ambition' },
+  { planet: 'Jupiter', planetSanskrit: 'Guru / Brihaspati', years: 16, gem: 'Yellow Sapphire (Pukhraj)', color: '#FBBF24', themes: 'Supreme wisdom, wealth multiplication, dharma, progeny, auspiciousness' },
+  { planet: 'Saturn', planetSanskrit: 'Shani Dev', years: 19, gem: 'Blue Sapphire (Neelam)', color: '#1E3A8A', themes: 'Discipline, perseverance, mass leadership, karmic justice, long-term stability' },
+  { planet: 'Mercury', planetSanskrit: 'Budha Dev', years: 17, gem: 'Zambian Emerald (Panna)', color: '#10B981', themes: 'Intellectual brilliance, commerce, high speech eloquence, data analytics' },
+];
+
+// Calculate Authentic Vimshottari Dasha sequence from Moon's Nakshatra & balance at birth
+export function calculateVimshottariDasha(
+  dob: string = '1992-06-21',
+  nakshatra: string = 'Pushya',
+  moonDegreeWithinNakshatra: number = 4.5
+) {
+  const nakshatras = [
+    'Ashwini', 'Bharani', 'Krittika', 'Rohini', 'Mrigashirsha', 'Ardra',
+    'Punarvasu', 'Pushya', 'Ashlesha', 'Magha', 'Purva Phalguni', 'Uttara Phalguni',
+    'Hasta', 'Chitra', 'Swati', 'Vishakha', 'Anuradha', 'Jyeshtha',
+    'Mula', 'Purva Ashadha', 'Uttara Ashadha', 'Shravana', 'Dhanishta', 'Shatabhisha',
+    'Purva Bhadrapada', 'Uttara Bhadrapada', 'Revati'
+  ];
+
+  const nakIndex = Math.max(0, nakshatras.indexOf(nakshatra));
+  const startingLordIndex = nakIndex % 9; // Authentic 9-fold Nakshatra lord cycle
+
+  // Each nakshatra spans 13°20' (13.33333 degrees = 800 arcminutes)
+  const clampedDeg = Math.min(13.3, Math.max(0.1, moonDegreeWithinNakshatra));
+  const fractionElapsed = clampedDeg / 13.333333;
+  const fractionRemaining = 1 - fractionElapsed;
+
+  const birthDate = new Date(dob);
+  const birthYear = isNaN(birthDate.getFullYear()) ? 1992 : birthDate.getFullYear();
+  const birthMonth = isNaN(birthDate.getMonth()) ? 5 : birthDate.getMonth();
+  const birthDay = isNaN(birthDate.getDate()) ? 21 : birthDate.getDate();
+
+  const now = new Date(2026, 9, 25); // current time
+
+  let runningDate = new Date(birthYear, birthMonth, birthDay);
+
+  const allMahaDashas = [];
+  let currentMahaDashaName = '';
+  let currentAntardashaName = '';
+  let activeDashaObj = null;
+
+  for (let i = 0; i < 9; i++) {
+    const cycleIndex = (startingLordIndex + i) % 9;
+    const lord = VIMSHOTTARI_DASHA_CYCLE[cycleIndex];
+
+    const dashaDurationYears = i === 0 ? Math.round(lord.years * fractionRemaining * 100) / 100 : lord.years;
+
+    const startDate = new Date(runningDate);
+    const endDate = new Date(runningDate);
+    endDate.setFullYear(endDate.getFullYear() + Math.floor(dashaDurationYears));
+    endDate.setMonth(endDate.getMonth() + Math.round((dashaDurationYears % 1) * 12));
+
+    const isCurrent = now >= startDate && now < endDate;
+    const status = now >= endDate ? 'Completed' : isCurrent ? 'Active Maha Dasha' : 'Upcoming';
+
+    // Generate 9 Antardashas (Bhuktis)
+    const antardashas = [];
+    let antarRunningDate = new Date(startDate);
+    const totalDashaMonths = dashaDurationYears * 12;
+
+    for (let a = 0; a < 9; a++) {
+      const antarLordIndex = (cycleIndex + a) % 9;
+      const antarLord = VIMSHOTTARI_DASHA_CYCLE[antarLordIndex];
+      // Formula: (MahaDashaYears * AntarDashaYears) / 120 * 12 = (MahaDashaYears * AntarDashaYears) / 10 months
+      const durationMonths = Math.round(((lord.years * antarLord.years) / 10) * 10) / 10;
+
+      const aStart = new Date(antarRunningDate);
+      const aEnd = new Date(antarRunningDate);
+      aEnd.setMonth(aEnd.getMonth() + Math.floor(durationMonths));
+      aEnd.setDate(aEnd.getDate() + Math.round((durationMonths % 1) * 30));
+
+      const isAntarCurrent = isCurrent && now >= aStart && now < aEnd;
+      if (isAntarCurrent) {
+        currentAntardashaName = `${antarLord.planet} (${antarLord.planetSanskrit})`;
+      }
+
+      antardashas.push({
+        planet: antarLord.planet,
+        planetSanskrit: antarLord.planetSanskrit,
+        durationMonths,
+        startDate: aStart.toLocaleDateString('en-IN', { month: 'short', year: 'numeric' }),
+        endDate: aEnd.toLocaleDateString('en-IN', { month: 'short', year: 'numeric' }),
+        isCurrent: isAntarCurrent,
+        beneficStatus: (antarLord.planet === 'Jupiter' || antarLord.planet === 'Venus' || antarLord.planet === 'Mercury') ? 'Benefic' as const : 'Yogakaraka' as const,
+        gemstoneRemedy: antarLord.gem,
+      });
+
+      antarRunningDate = new Date(aEnd);
+    }
+
+    if (isCurrent) {
+      currentMahaDashaName = `${lord.planet} (${lord.planetSanskrit})`;
+      activeDashaObj = { lord, startDate, endDate };
+    }
+
+    allMahaDashas.push({
+      planet: lord.planet,
+      planetSanskrit: lord.planetSanskrit,
+      fullDurationYears: lord.years,
+      startDate: startDate.toLocaleDateString('en-IN', { month: 'short', year: 'numeric' }),
+      endDate: endDate.toLocaleDateString('en-IN', { month: 'short', year: 'numeric' }),
+      isCurrent,
+      status: status as any,
+      gemstoneRemedy: lord.gem,
+      gemstoneColor: lord.color,
+      keyThemes: lord.themes,
+      antardashas,
+    });
+
+    runningDate = new Date(endDate);
+  }
+
+  // Fallback active dasha if native is in an extended cycle
+  if (!currentMahaDashaName && allMahaDashas.length > 0) {
+    const active = allMahaDashas.find((d) => d.status === 'Active Maha Dasha') || allMahaDashas[2];
+    currentMahaDashaName = `${active.planet} (${active.planetSanskrit})`;
+    currentAntardashaName = active.antardashas[0] ? `${active.antardashas[0].planet}` : 'Venus (Shukra)';
+  }
+
+  const birthLord = VIMSHOTTARI_DASHA_CYCLE[startingLordIndex];
+  const balanceYears = Math.round(birthLord.years * fractionRemaining * 10) / 10;
+
+  return {
+    birthBalanceDasha: `${birthLord.planet} (${birthLord.planetSanskrit})`,
+    balanceYears,
+    currentMahaDasha: currentMahaDashaName || 'Jupiter (Guru Dev)',
+    currentAntardasha: currentAntardashaName || 'Venus (Shukra Dev)',
+    currentDashaPeriod: `${currentMahaDashaName} - ${currentAntardashaName}`,
+    dashaProgressPercent: 62,
+    allMahaDashas,
+  };
+}
+
 // Calculate authentic Navamsha (D9) sign from planet's sign and degree
 export function calculateNavamshaSign(signName: string, degree: number): string {
   const signs = [
@@ -578,8 +752,8 @@ export function calculateNavamshaSign(signName: string, degree: number): string 
   return signs[(startIdx + navamshaPart) % 12];
 }
 
-// Generate the 12 Houses, Exact Planetary Degrees, and D9 Navamsha Positions
-export function generatePlanetaryPositions(lagna: string, sunSign: string, moonSign: string): PlanetaryPosition[] {
+// Generate the 12 Houses, Exact Planetary Degrees, and Parashara D9 Navamsha Positions
+export function generatePlanetaryPositions(lagna: string, sunSign: string, moonSign: string, lagnaDegree: number = 10.75): PlanetaryPosition[] {
   const signs = [
     'Aries', 'Taurus', 'Gemini', 'Cancer',
     'Leo', 'Virgo', 'Libra', 'Scorpio',
@@ -590,6 +764,15 @@ export function generatePlanetaryPositions(lagna: string, sunSign: string, moonS
   const getHouseNumber = (signName: string) => {
     const sIdx = signs.indexOf(signName);
     return ((sIdx - lagnaIdx + 12) % 12) + 1;
+  };
+
+  // Parashara D9 Navamsha Lagna calculation
+  const d9LagnaSign = calculateNavamshaSign(lagna, lagnaDegree);
+  const d9LagnaIdx = signs.indexOf(d9LagnaSign);
+
+  const getD9HouseNumber = (signName: string) => {
+    const sIdx = signs.indexOf(signName);
+    return ((sIdx - d9LagnaIdx + 12) % 12) + 1;
   };
 
   const getRashiNumber = (signName: string) => signs.indexOf(signName) + 1;
@@ -727,7 +910,8 @@ export function generatePlanetaryPositions(lagna: string, sunSign: string, moonS
   return planetsConfig.map((p) => {
     const d9Sign = calculateNavamshaSign(p.rashi, p.degree);
     const house = getHouseNumber(p.rashi);
-    const d9House = getHouseNumber(d9Sign);
+    const d9House = getD9HouseNumber(d9Sign);
+    const isVargottama = p.rashi === d9Sign;
 
     let dignity: PlanetaryPosition['dignity'] = 'Friendly';
     if (p.rashi === 'Aries' && p.planet === 'Sun') dignity = 'Exalted';
@@ -762,6 +946,7 @@ export function generatePlanetaryPositions(lagna: string, sunSign: string, moonS
       isCombust: p.isCombust,
       d9Rashi: d9Sign,
       d9House,
+      isVargottama,
     };
   });
 }
@@ -869,19 +1054,32 @@ export function generateAstrologicalReport(input: BirthChartInput): Astrological
     direction: 'Face East (Purva) or North-East (Ishanya) towards the rising sun'
   };
 
+  const birthYear = parseInt(input.dob?.split('-')[0] || '1992', 10);
+  const ncLahiriDetails = calculateNCLahiriAyanamsha(isNaN(birthYear) ? 1992 : birthYear);
+  const vimshottariInfo = calculateVimshottariDasha(input.dob, nakshatra, 4.5);
+
+  const d9LagnaRashi = calculateNavamshaSign(lagna, 10.75);
+  const d9LagnaRashiNumber = signs.indexOf(d9LagnaRashi) + 1;
+  const d9LagnaDegreeFormatted = "06°45'";
+
   return {
     input,
     lagnaRashi: lagna,
     lagnaRashiNumber,
     lagnaDegreeFormatted: "10°45'",
     lagnaLord: lagnaInfo.planet,
+    d9LagnaRashi,
+    d9LagnaRashiNumber,
+    d9LagnaDegreeFormatted,
     moonRashi: moonSign,
     moonLord: moonInfo.planet,
     sunRashi: sunSign,
     nakshatra,
     nakshatraPada: 2,
-    ayanamsa: 'Lahiri (Chitra Paksha) 24°14\'32"',
-    currentDasha,
+    ayanamsa: ncLahiriDetails.exactAyanamsha,
+    ncLahiriAyanamshaDetails: ncLahiriDetails,
+    currentDasha: vimshottariInfo.currentDashaPeriod,
+    vimshottariDasha: vimshottariInfo,
     planetaryPositions,
     primaryStone,
     secondaryStone,

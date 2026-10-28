@@ -38,6 +38,7 @@ export interface PlanetaryPosition {
   isCombust: boolean;
   d9Rashi: string;
   d9House: number;
+  isVargottama?: boolean;
 }
 
 export interface GemstoneRecommendation {
@@ -96,19 +97,131 @@ export interface AstrologerApproval {
   astrologerBadge: string;
 }
 
+export interface AstrologerDevoteeEntry {
+  id: string;
+  customerName: string;
+  phone?: string;
+  city: string;
+  dob: string;
+  tob: string;
+  lagnaRashi: string;
+  moonRashi: string;
+  lifeGoal: LifeGoal;
+  requestedStone: string;
+  requestType: 'birth_chart_dossier' | 'consultation_call' | 'custom_jewel_order';
+  requestedAt: string;
+  approvalStatus: 'pending' | 'approved' | 'modified' | 'special_remedy';
+  prescribedRatti: number;
+  prescribedMetal: string;
+  prescribedFinger: string;
+  prescribedMuhurat: string;
+  sanctionNotes: string;
+  marakaAfflictionChecked: boolean;
+  certificateNumber: string;
+  report?: AstrologicalReport;
+}
+
+export interface SacredStoneSanction {
+  id: string;
+  gemstoneKey: string;
+  name: string;
+  hindiName: string;
+  planet: string;
+  planetSanskrit: string;
+  color: string;
+  certifiedOrigin: string;
+  status: 'approved_consecrated' | 'pending_prana_pratishtha' | 'lab_verification_passed';
+  vedicSkinTouchCompliant: boolean;
+  huidHallmarkPassed: boolean;
+  recommendedWeightFormula: string;
+  recommendedMetal: string;
+  sacredDayMuhurat: string;
+  stockCaratsAvailable: number;
+  currentMarketRateINR: number;
+  mantraChantsApproved: number;
+}
+
+export interface AtelierCustomRequest {
+  id: string;
+  customerName: string;
+  phone: string;
+  city: string;
+  jewelType: 'Ring' | 'Pendant' | 'Bracelet / Kada' | 'Loose Consecrated Gem';
+  selectedGemstone: string;
+  carats: number;
+  metal: string;
+  purity: string;
+  ringSize?: string;
+  specialInstructions?: string;
+  requestedDate: string;
+  status: 'pending_approval' | 'approved_for_atelier' | 'consecration_scheduled' | 'rejected_incompatible';
+  astrologerClearance: boolean;
+}
+
+export interface VimshottariAntardasha {
+  planet: string;
+  planetSanskrit: string;
+  durationMonths: number;
+  startDate: string;
+  endDate: string;
+  isCurrent: boolean;
+  beneficStatus: 'Benefic' | 'Malefic' | 'Neutral' | 'Yogakaraka';
+  gemstoneRemedy: string;
+}
+
+export interface VimshottariMahaDasha {
+  planet: string;
+  planetSanskrit: string;
+  fullDurationYears: number;
+  startDate: string;
+  endDate: string;
+  isCurrent: boolean;
+  status: 'Completed' | 'Active Maha Dasha' | 'Upcoming';
+  gemstoneRemedy: string;
+  gemstoneColor: string;
+  keyThemes: string;
+  antardashas: VimshottariAntardasha[];
+}
+
+export interface VimshottariDashaInfo {
+  birthBalanceDasha: string;
+  balanceYears: number;
+  currentMahaDasha: string;
+  currentAntardasha: string;
+  currentDashaPeriod: string;
+  dashaProgressPercent: number;
+  allMahaDashas: VimshottariMahaDasha[];
+}
+
+export interface NCLahiriAyanamshaDetails {
+  exactAyanamsha: string;
+  valueDegrees: number;
+  degrees: number;
+  minutes: number;
+  seconds: number;
+  referenceEpoch: string;
+  calculationStandard: string;
+  ayanamshaType: 'N.C. Lahiri (Chitra Paksha)';
+}
+
 export interface AstrologicalReport {
   input: BirthChartInput;
   lagnaRashi: string;
   lagnaRashiNumber: number; // 1 to 12
   lagnaDegreeFormatted: string;
   lagnaLord: string;
+  d9LagnaRashi: string;
+  d9LagnaRashiNumber: number;
+  d9LagnaDegreeFormatted: string;
   moonRashi: string;
   moonLord: string;
   sunRashi: string;
   nakshatra: string;
   nakshatraPada: number;
-  ayanamsa: string; // e.g. 'Lahiri (Chitra Paksha) 24°14\'32"'
+  ayanamsa: string; // e.g. 'N.C. Lahiri (Chitra Paksha) 24°14\'32"'
+  ncLahiriAyanamshaDetails?: NCLahiriAyanamshaDetails;
   currentDasha: string;
+  vimshottariDasha?: VimshottariDashaInfo;
   planetaryPositions: PlanetaryPosition[];
   primaryStone: GemstoneRecommendation;
   secondaryStone?: GemstoneRecommendation;

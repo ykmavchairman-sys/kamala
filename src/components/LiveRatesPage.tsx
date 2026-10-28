@@ -25,6 +25,7 @@ import {
   GoldPurityRate
 } from '../data/marketRates';
 import { bellPlayer } from '../utils/audioBell';
+import { useLanguage } from '../context/LanguageContext';
 
 interface Props {
   onOpenBooking: () => void;
@@ -32,6 +33,7 @@ interface Props {
 }
 
 export const LiveRatesPage: React.FC<Props> = ({ onOpenBooking, onNavigateToJewelry }) => {
+  const { t } = useLanguage();
   const [marketData, setMarketData] = useState<LiveMarketFeedState>(INITIAL_MARKET_DATA);
   const [selectedKarat, setSelectedKarat] = useState<24 | 22 | 18 | 14>(22);
   const [calcWeight, setCalcWeight] = useState<number>(10);
@@ -91,35 +93,35 @@ export const LiveRatesPage: React.FC<Props> = ({ onOpenBooking, onNavigateToJewe
 
   return (
     <div className="max-w-7xl mx-auto space-y-10 pb-16 animate-fade-in-up">
-      {/* Page Header (Royal White & Gold Glassmorphic) */}
+      {/* Page Header (Pearl White & Magenta Glassmorphic) */}
       <div className="text-center max-w-4xl mx-auto space-y-4">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-100 via-amber-200/90 to-amber-100 border border-amber-300 text-[#700B1A] text-xs font-black tracking-wider uppercase shadow-xs">
-          <Sparkles className="w-3.5 h-3.5 text-amber-700" />
-          AUTHENTIC REAL-TIME MARKET RATE BULLETIN • SRI KAMALA JEWELLERS
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-pink-50 dark:bg-stone-800 border border-[#CC338B]/30 text-[#CC338B] text-xs font-black tracking-wider uppercase shadow-xs">
+          <Sparkles className="w-3.5 h-3.5 text-[#CC338B]" />
+          {t('hero_trust_badge', '100% BIS 916 HUID Hallmark • Trusted Since 1974')}
         </div>
 
-        <h1 className="font-serif-royal text-3xl sm:text-5xl font-black text-stone-900 tracking-tight leading-tight">
-          Today's Live <span className="text-gold-gradient">Gold & Silver Bullion Rates</span>
+        <h1 className="text-3xl sm:text-5xl font-black text-stone-900 dark:text-stone-100 tracking-tight leading-tight">
+          {t('rates_page_title', "Today's Live Gold & Silver Bullion Rates")}
         </h1>
 
-        <p className="text-stone-600 text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed font-medium">
-          Direct real-time spot prices synchronized with National MCX Spot and Indian Bullion & Jewellers Association (IBJA) official published benchmarks for Ballari. Every gram certified with 100% BIS Hallmark laser HUID registration.
+        <p className="text-stone-600 dark:text-stone-300 text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed font-medium">
+          {t('rates_page_desc', 'Direct real-time spot prices synchronized with National MCX Spot and Indian Bullion & Jewellers Association (IBJA) official published benchmarks for Ballari.')}
         </p>
 
         {/* Live Status Bar & Real-time Ticker Refresh */}
         <div className="flex flex-wrap items-center justify-center gap-3 text-xs pt-1">
-          <span className="flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-card border border-emerald-300 text-emerald-800 font-bold shadow-xs">
-            <Radio className="w-3.5 h-3.5 text-emerald-600 animate-pulse" />
+          <span className="flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-card border border-[#CC338B]/30 text-[#CC338B] font-bold shadow-xs">
+            <Radio className="w-3.5 h-3.5 text-[#CC338B] animate-pulse" />
             <span>Market Session: {marketData.marketSession}</span>
           </span>
 
-          <span className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full glass-card border border-amber-300 text-amber-950 font-semibold shadow-xs">
-            <Clock className="w-3.5 h-3.5 text-amber-600" />
+          <span className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full glass-card border border-[#CC338B]/30 text-stone-700 dark:text-stone-300 font-semibold shadow-xs">
+            <Clock className="w-3.5 h-3.5 text-[#CC338B]" />
             <span>{marketData.lastUpdatedTimestamp}</span>
           </span>
 
-          <span className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full glass-card border border-amber-300 text-stone-700 font-medium shadow-xs">
-            <Building2 className="w-3.5 h-3.5 text-amber-700" />
+          <span className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full glass-card border border-[#CC338B]/30 text-stone-700 dark:text-stone-300 font-medium shadow-xs">
+            <Building2 className="w-3.5 h-3.5 text-[#CC338B]" />
             <span>{marketData.benchmarkLocation}</span>
           </span>
 
@@ -129,7 +131,7 @@ export const LiveRatesPage: React.FC<Props> = ({ onOpenBooking, onNavigateToJewe
               syncRates();
             }}
             disabled={isRefreshing}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold shadow-sm transition active:scale-95 cursor-pointer disabled:opacity-75"
+            className="btn-magenta flex items-center gap-1.5 px-3.5 py-1.5 rounded-full font-bold shadow-sm transition active:scale-95 cursor-pointer disabled:opacity-75"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin' : ''}`} />
             <span>{isRefreshing ? 'Fetching Spot Tick...' : 'Sync Live Spot'}</span>
@@ -137,51 +139,51 @@ export const LiveRatesPage: React.FC<Props> = ({ onOpenBooking, onNavigateToJewe
         </div>
 
         {/* IBJA Benchmark Official Header & Verification Card */}
-        <div className="max-w-3xl mx-auto p-4 rounded-2xl bg-gradient-to-r from-amber-50 via-white to-amber-50/80 border border-amber-300/90 text-xs text-stone-700 shadow-sm space-y-3">
-          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-amber-200/80 pb-2.5">
+        <div className="max-w-3xl mx-auto p-4 rounded-2xl bg-white/95 dark:bg-stone-900 border border-[#CC338B]/30 text-xs text-stone-700 dark:text-stone-300 shadow-sm space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#CC338B]/20 pb-2.5">
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
-              <span className="font-black text-amber-950 uppercase tracking-wide text-[11px]">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#CC338B] animate-ping" />
+              <span className="font-black text-[#CC338B] uppercase tracking-wide text-[11px]">
                 IBJA Mandated Benchmark Source:
               </span>
               <a
                 href="https://www.ibjarates.com/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold border border-amber-300 transition"
+                className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-pink-50 dark:bg-stone-800 hover:bg-pink-100 text-[#CC338B] font-bold border border-[#CC338B]/30 transition"
               >
                 <span>https://www.ibjarates.com/</span>
                 <span className="text-[10px]">↗</span>
               </a>
             </div>
 
-            <span className="text-[11px] text-amber-900 font-bold bg-white px-2.5 py-0.5 rounded-md border border-amber-200 shadow-2xs">
+            <span className="text-[11px] text-[#CC338B] font-bold bg-white dark:bg-stone-800 px-2.5 py-0.5 rounded-md border border-[#CC338B]/20 shadow-2xs">
               {lastSyncText}
             </span>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
-            <div className="p-2 rounded-xl bg-amber-100/50 border border-amber-200">
+            <div className="p-2 rounded-xl bg-pink-50/50 dark:bg-stone-800/50 border border-[#CC338B]/20">
               <span className="text-[10px] text-stone-500 uppercase font-bold block">Gold 999 (AM)</span>
-              <span className="text-xs sm:text-sm font-black text-stone-900">
+              <span className="text-xs sm:text-sm font-black text-stone-900 dark:text-stone-100">
                 ₹{(marketData.ibjaOfficialBenchmark?.gold999?.amPricePer10g || 146406).toLocaleString('en-IN')}/10g
               </span>
             </div>
-            <div className="p-2 rounded-xl bg-amber-100/50 border border-amber-200">
+            <div className="p-2 rounded-xl bg-pink-50/50 dark:bg-stone-800/50 border border-[#CC338B]/20">
               <span className="text-[10px] text-stone-500 uppercase font-bold block">Gold 999 (PM)</span>
-              <span className="text-xs sm:text-sm font-black text-[#8B0000]">
+              <span className="text-xs sm:text-sm font-black text-[#CC338B]">
                 ₹{(marketData.ibjaOfficialBenchmark?.gold999?.pmPricePer10g || 145944).toLocaleString('en-IN')}/10g
               </span>
             </div>
-            <div className="p-2 rounded-xl bg-amber-100/50 border border-amber-200">
+            <div className="p-2 rounded-xl bg-pink-50/50 dark:bg-stone-800/50 border border-[#CC338B]/20">
               <span className="text-[10px] text-stone-500 uppercase font-bold block">Gold 916 (22K)</span>
-              <span className="text-xs sm:text-sm font-black text-stone-900">
+              <span className="text-xs sm:text-sm font-black text-stone-900 dark:text-stone-100">
                 ₹{(marketData.ibjaOfficialBenchmark?.gold916?.amPricePer10g || 134108).toLocaleString('en-IN')}/10g
               </span>
             </div>
-            <div className="p-2 rounded-xl bg-amber-100/50 border border-amber-200">
+            <div className="p-2 rounded-xl bg-pink-50/50 dark:bg-stone-800/50 border border-[#CC338B]/20">
               <span className="text-[10px] text-stone-500 uppercase font-bold block">Silver 999 (1KG)</span>
-              <span className="text-xs sm:text-sm font-black text-stone-900">
+              <span className="text-xs sm:text-sm font-black text-stone-900 dark:text-stone-100">
                 ₹{(marketData.ibjaOfficialBenchmark?.silver999?.amPricePerKg || 209467).toLocaleString('en-IN')}/kg
               </span>
             </div>
@@ -189,7 +191,7 @@ export const LiveRatesPage: React.FC<Props> = ({ onOpenBooking, onNavigateToJewe
 
           <div className="text-[10px] text-stone-500 flex items-center justify-between pt-1">
             <span>*Rates officially published by IBJA are exclusive of 3% GST and Making Charges. Mandated by RBI for Sovereign Gold Bonds (SGB).</span>
-            <span className="font-bold text-amber-800 hidden sm:inline">Ballari Sarafa Benchmark</span>
+            <span className="font-bold text-[#CC338B] hidden sm:inline">Ballari Sarafa Benchmark</span>
           </div>
         </div>
       </div>
@@ -201,10 +203,10 @@ export const LiveRatesPage: React.FC<Props> = ({ onOpenBooking, onNavigateToJewe
           return (
             <div
               key={rate.purityName}
-              className={`rounded-3xl p-6 sm:p-8 shadow-[0_12px_45px_rgba(212,175,55,0.14)] relative overflow-hidden transition-all duration-300 border-2 hover:-translate-y-1 ${
+              className={`rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden transition-all duration-300 border hover:-translate-y-1 glass-card ${
                 is916
-                  ? 'glass-card-gold border-amber-400 bg-gradient-to-br from-[#FFFDF7] via-[#FFF9EC] to-[#FFF4D9]'
-                  : 'glass-card border-amber-300 bg-white/90'
+                  ? 'border-[#CC338B]/40 bg-white/95 dark:bg-stone-900'
+                  : 'border-[#CC338B]/25 bg-white/90 dark:bg-stone-900'
               }`}
             >
               {/* Highlight Badge */}
@@ -212,14 +214,14 @@ export const LiveRatesPage: React.FC<Props> = ({ onOpenBooking, onNavigateToJewe
                 <span
                   className={`px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider shadow-2xs ${
                     is916
-                      ? 'bg-[#8B0000] text-amber-100 ring-1 ring-amber-300'
-                      : 'bg-amber-100 text-amber-950 border border-amber-300'
+                      ? 'bg-[#CC338B] text-white ring-1 ring-[#CC338B]/40'
+                      : 'bg-pink-50 dark:bg-stone-800 text-[#CC338B] border border-[#CC338B]/30'
                   }`}
                 >
                   {is916 ? '⭐ Most Popular for Bridal Jewellery (916 BIS)' : '💎 Pure Investment Bullion (999 Fine)'}
                 </span>
 
-                <div className="flex items-center gap-1 text-emerald-700 text-xs font-black bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                <div className="flex items-center gap-1 text-emerald-700 text-xs font-black bg-emerald-50 dark:bg-stone-800 px-2.5 py-0.5 rounded-full border border-emerald-200">
                   <TrendingUp className="w-3 h-3" />
                   +₹{rate.changeDayINR}/g (+{rate.changePercent}%)
                 </div>
@@ -227,68 +229,68 @@ export const LiveRatesPage: React.FC<Props> = ({ onOpenBooking, onNavigateToJewe
 
               {/* Title & Fineness */}
               <div className="mb-4">
-                <h2 className="font-serif-royal text-2xl sm:text-3xl font-black text-stone-900">
+                <h2 className="text-2xl sm:text-3xl font-black text-stone-900 dark:text-stone-100">
                   {rate.purityName}
                 </h2>
-                <p className="text-xs text-amber-900 font-bold mt-0.5">{rate.fineness}</p>
+                <p className="text-xs text-[#CC338B] font-bold mt-0.5">{rate.fineness}</p>
               </div>
 
               {/* Price Grid (1g, 8g/Pavan, 10g, 100g) */}
-              <div className="grid grid-cols-3 gap-3 p-4 rounded-2xl bg-white/95 border border-amber-200 shadow-inner mb-4">
+              <div className="grid grid-cols-3 gap-3 p-4 rounded-2xl bg-white/95 dark:bg-stone-800 border border-[#CC338B]/20 shadow-inner mb-4">
                 <div className="text-center">
                   <span className="text-[10px] text-stone-500 uppercase font-bold block">1 Gram</span>
-                  <span className="text-lg sm:text-2xl font-black text-stone-950">
+                  <span className="text-lg sm:text-2xl font-black text-stone-950 dark:text-stone-100">
                     ₹{rate.ratePerGramINR.toLocaleString('en-IN')}
                   </span>
                 </div>
-                <div className="text-center border-x border-amber-200 px-2">
+                <div className="text-center border-x border-[#CC338B]/20 px-2">
                   <span className="text-[10px] text-stone-500 uppercase font-bold block">8g (1 Pavan)</span>
-                  <span className="text-lg sm:text-2xl font-black text-[#8B0000]">
+                  <span className="text-lg sm:text-2xl font-black text-[#CC338B]">
                     ₹{rate.ratePer8GramINR.toLocaleString('en-IN')}
                   </span>
                 </div>
                 <div className="text-center">
                   <span className="text-[10px] text-stone-500 uppercase font-bold block">10 Grams</span>
-                  <span className="text-lg sm:text-2xl font-black text-stone-950">
+                  <span className="text-lg sm:text-2xl font-black text-stone-950 dark:text-stone-100">
                     ₹{rate.ratePer10GramINR.toLocaleString('en-IN')}
                   </span>
                 </div>
               </div>
 
               {/* Transparent Buy vs Exchange / Scrap Breakdown */}
-              <div className="grid grid-cols-2 gap-2 text-xs p-3 rounded-xl bg-amber-50/70 border border-amber-200 mb-4">
+              <div className="grid grid-cols-2 gap-2 text-xs p-3 rounded-xl bg-pink-50/40 dark:bg-stone-800 border border-[#CC338B]/20 mb-4">
                 <div>
                   <span className="text-[10px] text-stone-500 uppercase block font-semibold">Retail Price (Incl 3% GST):</span>
-                  <span className="font-black text-emerald-800 text-sm">
+                  <span className="font-black text-[#CC338B] text-sm">
                     ₹{(rate.retailBuyWithGst || Math.round(rate.ratePerGramINR * 1.03)).toLocaleString('en-IN')}/g
                   </span>
                 </div>
                 <div>
                   <span className="text-[10px] text-stone-500 uppercase block font-semibold">Exchange / Sell-Back Guarantee:</span>
-                  <span className="font-black text-stone-900 text-sm">
+                  <span className="font-black text-stone-900 dark:text-stone-100 text-sm">
                     ₹{(rate.scrapSellBack || Math.round(rate.ratePerGramINR * 0.985)).toLocaleString('en-IN')}/g
                   </span>
                 </div>
               </div>
 
               {/* Application / Best used for */}
-              <p className="text-xs text-stone-600 mb-5 font-medium flex items-center gap-1.5">
-                <Info className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                <span><strong className="text-stone-800">Ideal For:</strong> {rate.bestUsedFor}</span>
+              <p className="text-xs text-stone-600 dark:text-stone-300 mb-5 font-medium flex items-center gap-1.5">
+                <Info className="w-3.5 h-3.5 text-[#CC338B] shrink-0" />
+                <span><strong className="text-stone-800 dark:text-stone-200">Ideal For:</strong> {rate.bestUsedFor}</span>
               </p>
 
               {/* Actions */}
-              <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-amber-200/80">
+              <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-[#CC338B]/20">
                 <button
                   onClick={() => handleWhatsAppBooking(rate.purityName, rate.ratePerGramINR)}
-                  className="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#8B0000] to-[#600512] hover:brightness-110 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md transition cursor-pointer"
+                  className="btn-magenta flex-1 py-2.5 px-4 rounded-xl text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md transition cursor-pointer"
                 >
-                  <PhoneCall className="w-3.5 h-3.5 text-amber-300" />
+                  <PhoneCall className="w-3.5 h-3.5 text-white" />
                   Lock In Rate on WhatsApp
                 </button>
                 <button
                   onClick={() => handleShareRate(rate)}
-                  className="py-2.5 px-4 rounded-xl bg-white border border-amber-300 text-amber-950 hover:bg-amber-50 font-bold text-xs shadow-xs transition cursor-pointer"
+                  className="py-2.5 px-4 rounded-xl bg-white dark:bg-stone-800 border border-[#CC338B]/30 text-[#CC338B] hover:bg-pink-50 font-bold text-xs shadow-xs transition cursor-pointer"
                 >
                   {copiedPurity === rate.purityName ? '✓ Copied' : 'Share Rate'}
                 </button>
